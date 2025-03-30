@@ -10,11 +10,7 @@ namespace Game.Interactables
         [SerializeField] private float _secondsToAnimate = 0.3f;
         private float? _startScale;
         private Sequence _sequence;
-        [Inject]
-        public void Construct()
-        {
-            
-        }
+        
         protected override void OnInteract()
         {
             if (_startScale == null)

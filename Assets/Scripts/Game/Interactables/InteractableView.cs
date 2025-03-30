@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game.Player.Data;
 using UnityEngine;
@@ -12,20 +13,36 @@ namespace Game.Interactables
 
         private Color _unselectedColor;
         private float _startOutlineWidth;
+        private bool _wasConstructed;
 
         private ContextContainer _contextContainer;
-        private List<IActionContainer> _actionsOnInteract = new List<IActionContainer>();
+        private Dictionary<Interaction, List<IAction>> _actions;
         private void Start()
         {
+            Construct();
+        }
+
+        public void Construct()
+        {
+            if(_wasConstructed) return;
+            _wasConstructed = true;
+
+            _actions = new Dictionary<Interaction, List<IAction>>();
+            foreach (Interaction interaction in Enum.GetValues(typeof(Interaction)))
+                _actions.Add(interaction, new List<IAction>());
+            
             _contextContainer = new ContextContainer();
             _contextContainer.AddContext(new InteractedObjectContext(this));
             _unselectedColor = _outline.OutlineColor;
             _startOutlineWidth = _outline.OutlineWidth;
+            OnConstruct();
         }
 
-        public InteractableView AddActionApplier(IActionContainer actionContainer)
+        protected virtual void OnConstruct(){}
+
+        public InteractableView AddActionApplier(IAction action, Interaction interactionType = Interaction.InteractButton)
         {
-            _actionsOnInteract.Add(actionContainer);
+            _actions[interactionType].Add(action);
             return this;
         }
         public void SetIsSelectedState(bool isSelected)
@@ -34,10 +51,10 @@ namespace Game.Interactables
             _outline.OutlineWidth = isSelected ? _startOutlineWidth * 3 : _startOutlineWidth;
         }
 
-        public void Interact(ContextContainer context)
+        public void Interact(ContextContainer context, Interaction interactionType = Interaction.InteractButton)
         {
             context.AddContext(_contextContainer);
-            _actionsOnInteract.ForEach(action => action.ApplyAction(context));
+            _actions[interactionType].ForEach(action => action.ApplyAction(context));
             OnInteract();
         }
 
@@ -54,12 +71,16 @@ namespace Game.Interactables
             _contextContainer.AddContext(context);
             return _contextContainer;
         }
+
+        public bool TryGetContext<TContext>(out TContext context) where TContext : IInteractableContext
+        {
+            return _contextContainer.TryGetContext(out context);
+        }
     }
 
-    public interface IInteractableContext{}
-
-    public interface IContextContainer
+    public enum Interaction
     {
-        public ContextContainer AddContext<TContext>(TContext context) where TContext : IInteractableContext;
+        InteractButton,
+        Collide
     }
 }

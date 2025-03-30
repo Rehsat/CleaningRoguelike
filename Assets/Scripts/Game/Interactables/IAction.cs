@@ -1,6 +1,6 @@
 ﻿namespace Game.Interactables
 {
-    public interface IActionContainer
+    public interface IAction
     {
         public void ApplyAction(ContextContainer context);
     }

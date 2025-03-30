@@ -1,9 +1,10 @@
 using Game.Interactables;
+using Game.Interactables.Contexts;
 using UnityEngine;
 
 namespace Game.Clothing
 {
-    public class ClothingFactory 
+    public class ClothingFactory : IFactory<ClothingView>
     {
         private readonly ClothingView _clothingPrefab;
 
@@ -12,10 +13,13 @@ namespace Game.Clothing
             _clothingPrefab = clothingPrefab;
         }
 
-        public ClothingView CreateClothing(Vector3 position)
+        public ClothingView Get()
         {
-            var newClothing = Object.Instantiate(_clothingPrefab, position, Quaternion.identity);
-            newClothing.AddActionApplier(new PickUpActionContainer());
+            var newClothing = Object.Instantiate(_clothingPrefab);
+            newClothing.Construct();
+            newClothing
+                .AddActionApplier(new PickUpAction())
+                .AddContext(new SellableContext(1));
             return newClothing;
         }
     }

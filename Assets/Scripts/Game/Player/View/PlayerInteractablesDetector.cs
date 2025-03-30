@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Interactables;
+using Game.Interactables.Contexts;
 using Game.Player.Data;
 using Game.Player.PayerInput;
 using UniRx;
@@ -26,7 +27,7 @@ namespace Game.Player
             _playerInput.OnInteractButtonPressed.SubscribeWithSkip((() =>
             {
                 var contextContainer = new ContextContainer().
-                    AddContext(new PlayerObjectHolderContext(_objectHolder));
+                    AddContext(new ObjectHolderContext(_objectHolder));
                 
                 if (_currentInteractable != null)
                     _currentInteractable.Interact(contextContainer);

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening.Core;
+using UnityEditor.Rendering.LookDev;
+using UnityEngine;
 
 namespace Game.Interactables
 {
@@ -14,7 +17,16 @@ namespace Game.Interactables
 
         public ContextContainer AddContext<TContext>(TContext context) where TContext : IInteractableContext
         {
-            _contexts.Add(typeof(TContext), context);
+            var typeOfContext = context.GetType();
+            if (_contexts.ContainsKey(typeOfContext))
+            {
+                Debug.LogError("Already contains " + typeOfContext);
+            }
+            else
+            {
+                _contexts.Add(typeOfContext, context);
+            }
+            
             return this;
         }
 

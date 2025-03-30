@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Clothing
 {
-    public class ClothingSpawner : IActionContainer
+    public class ClothingSpawner : IAction
     {
         private readonly ClothingFactory _clothingFactory;
         private readonly Transform _spawnPosition;
@@ -15,7 +15,8 @@ namespace Game.Clothing
         }
         public void ApplyAction(ContextContainer context)
         {
-            _clothingFactory.CreateClothing(_spawnPosition.position);
+            var newClothing = _clothingFactory.Get();
+            newClothing.transform.position = _spawnPosition.position;
         }
     }
 }
