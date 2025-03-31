@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening.Core;
+using EasyFramework.ReactiveEvents;
 using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace Game.Interactables
     public class ContextContainer : IContextContainer
     {
         private Dictionary<Type, IInteractableContext> _contexts;
+        private ReactiveEvent<IContextContainer> _onNewContextAdded;
+        public IReadOnlyReactiveEvent<IContextContainer> OnNewContextAdded => _onNewContextAdded;
         public ContextContainer()
         {
             _contexts = new Dictionary<Type, IInteractableContext>();

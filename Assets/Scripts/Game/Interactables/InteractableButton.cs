@@ -11,7 +11,7 @@ namespace Game.Interactables
         private float? _startScale;
         private Sequence _sequence;
         
-        protected override void OnInteract()
+        protected override void OnInteract(ContextContainer context)
         {
             if (_startScale == null)
                 _startScale = transform.localScale.z;

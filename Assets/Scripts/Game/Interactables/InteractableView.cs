@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using EasyFramework.ReactiveEvents;
 using Game.Player.Data;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -17,6 +18,8 @@ namespace Game.Interactables
 
         private ContextContainer _contextContainer;
         private Dictionary<Interaction, List<IAction>> _actions;
+
+        protected ContextContainer MyContextContainer => _contextContainer;
         private void Start()
         {
             Construct();
@@ -31,11 +34,13 @@ namespace Game.Interactables
             foreach (Interaction interaction in Enum.GetValues(typeof(Interaction)))
                 _actions.Add(interaction, new List<IAction>());
             
-            _contextContainer = new ContextContainer();
-            _contextContainer.AddContext(new InteractedObjectContext(this));
             _unselectedColor = _outline.OutlineColor;
             _startOutlineWidth = _outline.OutlineWidth;
+            
+            _contextContainer = new ContextContainer();
             OnConstruct();
+            
+            _contextContainer.AddContext(new InteractedObjectContext(this));
         }
 
         protected virtual void OnConstruct(){}
@@ -53,12 +58,14 @@ namespace Game.Interactables
 
         public void Interact(ContextContainer context, Interaction interactionType = Interaction.InteractButton)
         {
+            if(CanBeInteracted(context,interactionType) == false) return;
             context.AddContext(_contextContainer);
             _actions[interactionType].ForEach(action => action.ApplyAction(context));
-            OnInteract();
+            OnInteract(context);
         }
 
-        protected virtual void OnInteract(){}
+        protected virtual bool CanBeInteracted(ContextContainer context, Interaction interactionType){return true;}
+        protected virtual void OnInteract(ContextContainer context){}
 
         public void OnValidate()
         {

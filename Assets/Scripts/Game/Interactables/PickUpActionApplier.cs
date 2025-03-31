@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Game.Clothing;
 using Game.Interactables.Contexts;
 using Game.Player.Data;
 using UniRx;
@@ -62,8 +63,21 @@ namespace Game.Interactables
     
     public class ChangeClothingState : IAction
     {
+        private readonly ClothingChangerSettings _clothingChangerSettings;
+
+        public ChangeClothingState(ClothingChangerSettings clothingChangerSettings)
+        {
+            _clothingChangerSettings = clothingChangerSettings;
+        }
         public void ApplyAction(ContextContainer context)
         {
+            ClothingContext clothingContext;
+            if (context.TryGetContext(out clothingContext))
+            {
+                var clothingGameObject = clothingContext.Clothing.gameObject;
+                clothingGameObject.transform.position = _clothingChangerSettings.DropPosition.position;
+                clothingGameObject.SetActive(true);
+            }
         }
     }
 }
