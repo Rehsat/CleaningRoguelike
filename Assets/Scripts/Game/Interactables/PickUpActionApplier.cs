@@ -61,11 +61,11 @@ namespace Game.Interactables
         }
     }
     
-    public class ChangeClothingState : IAction
+    public class ChangeClothingStateAction : IAction
     {
         private readonly ClothingChangerSettings _clothingChangerSettings;
 
-        public ChangeClothingState(ClothingChangerSettings clothingChangerSettings)
+        public ChangeClothingStateAction(ClothingChangerSettings clothingChangerSettings)
         {
             _clothingChangerSettings = clothingChangerSettings;
         }
@@ -74,6 +74,8 @@ namespace Game.Interactables
             ClothingContext clothingContext;
             if (context.TryGetContext(out clothingContext))
             {
+                clothingContext.Clothing.SetCurrentClothingStage(_clothingChangerSettings.ResultStage);
+                
                 var clothingGameObject = clothingContext.Clothing.gameObject;
                 clothingGameObject.transform.position = _clothingChangerSettings.DropPosition.position;
                 clothingGameObject.SetActive(true);

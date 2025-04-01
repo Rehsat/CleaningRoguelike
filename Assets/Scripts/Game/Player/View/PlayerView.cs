@@ -66,6 +66,7 @@ namespace Game.Player
                 }
                 else
                 {
+                    if (objectHolder.CurrentPickedUpObject.Value == null) return;
                     var holdableTransform = objectHolder.CurrentPickedUpObject.Value.transform;
                     holdableTransform.parent = null;
                     holdableTransform.position += Vector3.up;

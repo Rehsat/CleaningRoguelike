@@ -11,11 +11,12 @@ namespace Game.Interactables
     public class ContextContainer : IContextContainer
     {
         private Dictionary<Type, IInteractableContext> _contexts;
-        private ReactiveEvent<IContextContainer> _onNewContextAdded;
-        public IReadOnlyReactiveEvent<IContextContainer> OnNewContextAdded => _onNewContextAdded;
+        private ReactiveEvent<IInteractableContext> _onNewContextAdded;
+        public IReadOnlyReactiveEvent<IInteractableContext> OnNewContextAdded => _onNewContextAdded;
         public ContextContainer()
         {
             _contexts = new Dictionary<Type, IInteractableContext>();
+            _onNewContextAdded = new ReactiveEvent<IInteractableContext>();
         }
 
         public ContextContainer AddContext<TContext>(TContext context) where TContext : IInteractableContext
@@ -28,6 +29,7 @@ namespace Game.Interactables
             else
             {
                 _contexts.Add(typeOfContext, context);
+                _onNewContextAdded.Notify(context);
             }
             
             return this;

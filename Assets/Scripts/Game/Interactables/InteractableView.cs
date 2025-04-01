@@ -38,9 +38,8 @@ namespace Game.Interactables
             _startOutlineWidth = _outline.OutlineWidth;
             
             _contextContainer = new ContextContainer();
-            OnConstruct();
-            
             _contextContainer.AddContext(new InteractedObjectContext(this));
+            OnConstruct();
         }
 
         protected virtual void OnConstruct(){}
@@ -59,9 +58,13 @@ namespace Game.Interactables
         public void Interact(ContextContainer context, Interaction interactionType = Interaction.InteractButton)
         {
             if(CanBeInteracted(context,interactionType) == false) return;
-            context.AddContext(_contextContainer);
-            _actions[interactionType].ForEach(action => action.ApplyAction(context));
-            OnInteract(context);
+            
+            var resultContext = new ContextContainer()
+                .AddContext(_contextContainer)
+                .AddContext(context);
+            
+            _actions[interactionType].ForEach(action => action.ApplyAction(resultContext));
+            OnInteract(resultContext);
         }
 
         protected virtual bool CanBeInteracted(ContextContainer context, Interaction interactionType){return true;}
