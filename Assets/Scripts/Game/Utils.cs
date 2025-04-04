@@ -5,17 +5,17 @@ using UnityEngine;
 
 public static class Utils
 {
-    public static Sequence GetWorkTween(Transform transform)
+    public static Sequence GetWorkTween(Transform transform, float durationSeconds = 1f)
     {
         var startScale = transform.localScale;
         var startPosition = transform.position;
         var startPositionY = startPosition.y;
-        var scale = startScale.y * 0.8f;
+        var scale = startScale.y * 0.85f;
         var movePositionY = startPositionY - (startScale.y-scale) / 2f;
-        var duration = 0.5f;
+        var halfDuration = durationSeconds/2;
         
-        var tween = transform.DOScaleY(scale, duration).SetEase(Ease.OutBack);
-        var tween2 = transform.DOMoveY(movePositionY,duration).SetEase(Ease.OutBack);
+        var tween = transform.DOScaleY(scale, halfDuration).SetEase(Ease.OutBack);
+        var tween2 = transform.DOMoveY(movePositionY, halfDuration).SetEase(Ease.OutBack);
         return DOTween.Sequence()
             .Append(tween)
             .Join(tween2)

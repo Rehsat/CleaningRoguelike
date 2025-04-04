@@ -7,11 +7,27 @@ namespace Game.Clothing
 {
     public class WashingMachine : InteractableView
     {
+        [SerializeField] private ParticleSystem _particleOnComplete;
         [SerializeField] private ClothingChangerSettings _clothingChangerSettings;
         protected override void OnConstruct()
         {
-            var clothingChangeAction = new ChangeClothingStateAction(_clothingChangerSettings);
-            AddActionApplier(new TimedAction<ChangeClothingStateAction>(clothingChangeAction, 2), Interaction.Collide);
+            var clothingChangeAction = new ChangeClothingStateAction(_clothingChangerSettings, transform.forward);
+            var timedWashingAction = new TimedAction<ChangeClothingStateAction>(clothingChangeAction, 2);
+            AddActionApplier(timedWashingAction, Interaction.Collide);
+            
+            timedWashingAction.OnWorkStateChanged.SubscribeWithSkip((workIsEnabled => // on work end
+            {
+                if (workIsEnabled)
+                {
+                    _particleOnComplete.gameObject.SetActive(false);
+                }
+                else
+                {
+                    var particlePosition = _clothingChangerSettings.DropPosition.position;
+                    _particleOnComplete.transform.position = particlePosition;
+                    _particleOnComplete.gameObject.SetActive(true);
+                }
+            }));
         }
 
         protected override bool CanBeInteracted(ContextContainer context, Interaction interactionType)
