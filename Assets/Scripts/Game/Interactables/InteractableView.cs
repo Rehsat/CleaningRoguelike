@@ -55,7 +55,7 @@ namespace Game.Interactables
             _outline.OutlineWidth = isSelected ? _startOutlineWidth * 3 : _startOutlineWidth;
         }
 
-        public void Interact(ContextContainer context, Interaction interactionType = Interaction.InteractButton)
+        public void Interact(ContextContainer context, Interaction interactionType)
         {
             if(CanBeInteracted(context,interactionType) == false) return;
             
@@ -64,11 +64,11 @@ namespace Game.Interactables
                 .AddContext(context);
             
             _actions[interactionType].ForEach(action => action.ApplyAction(resultContext));
-            OnInteract(resultContext);
+            OnInteract(resultContext, interactionType);
         }
 
         protected virtual bool CanBeInteracted(ContextContainer context, Interaction interactionType){return true;}
-        protected virtual void OnInteract(ContextContainer context){}
+        protected virtual void OnInteract(ContextContainer context, Interaction interactionType){}
 
         public void OnValidate()
         {
@@ -91,6 +91,7 @@ namespace Game.Interactables
     public enum Interaction
     {
         InteractButton,
-        Collide
+        Collide,
+        OnLookStateChange
     }
 }

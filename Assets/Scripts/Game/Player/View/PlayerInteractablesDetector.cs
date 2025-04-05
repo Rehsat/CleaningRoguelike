@@ -17,20 +17,20 @@ namespace Game.Player
         private Camera _playerCamera;
         private PlayerInput _playerInput;
         private ObjectHolder _objectHolder;
+        private ContextContainer _contextContainer;
         
         public void Construct(Camera playerCamera, PlayerInput playerInput, ObjectHolder objectHolder)
         {
             _playerCamera = playerCamera;
             _playerInput = playerInput;
             _objectHolder = objectHolder;
+            _contextContainer = new ContextContainer().
+                AddContext(new ObjectHolderContext(_objectHolder));
 
             _playerInput.OnInteractButtonPressed.SubscribeWithSkip((() =>
             {
-                var contextContainer = new ContextContainer().
-                    AddContext(new ObjectHolderContext(_objectHolder));
-                
                 if (_currentInteractable != null)
-                    _currentInteractable.Interact(contextContainer);
+                    _currentInteractable.Interact(_contextContainer, Interaction.InteractButton);
             }));
             Observable.Interval(TimeSpan.FromSeconds(0.15f)).Subscribe((l =>
             {
@@ -38,27 +38,34 @@ namespace Game.Player
             }));
         }
 
-        void CheckForInteractables()
+        private void CheckForInteractables()
         {
             Ray ray = _playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, _interactDistance, _interactableLayer))
             {
-                ResetCurrentInteractable();
-                _currentInteractable = hit.collider.GetComponent<InteractableView>();
+                var newSelectedInteractable = hit.collider.GetComponent<InteractableView>();
+                if(newSelectedInteractable == _currentInteractable) return;
+                
+                UnselectCurrentInteractable();
+                _currentInteractable = newSelectedInteractable;
+                _currentInteractable.Interact(_contextContainer, Interaction.OnLookStateChange);
                 _currentInteractable.SetIsSelectedState(true);
             }
             else
             {
-                ResetCurrentInteractable();
-                _currentInteractable = null;
+                UnselectCurrentInteractable();
             }
         }
 
-        private void ResetCurrentInteractable()
+        private void UnselectCurrentInteractable()
         {
-            if(_currentInteractable != null)
+            if (_currentInteractable != null)
+            {
+                _currentInteractable.Interact(_contextContainer, Interaction.OnLookStateChange);
                 _currentInteractable.SetIsSelectedState(false);
+                _currentInteractable = null;
+            }
         }
     }
 }

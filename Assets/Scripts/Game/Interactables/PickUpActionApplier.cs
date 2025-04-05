@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using EasyFramework.ReactiveEvents;
 using Game.Clothing;
 using Game.Interactables.Contexts;
@@ -24,7 +25,7 @@ namespace Game.Interactables
         }
     }
 
-    public class TimedAction<TAction> : IAction where TAction : IAction
+    public class TimedAction<TAction> : IWorkAction where TAction : IAction
     {
         private readonly TAction _action;
         private readonly float _secondsToComplete;
@@ -70,23 +71,79 @@ namespace Game.Interactables
         }
     }
 
-    public class PressingStateSwitchAction<TAction> : IAction where TAction : IAction // seems like this class is for OnLookAction only
+    public class PressingStateSwitchAction<TAction> : IWorkAction where TAction : IAction // seems like this class is for OnLookAction only
     {
+        private readonly TAction _actionOnComplete;
 
+        private CompositeDisposable _compositeDisposable;
+        private Sequence _currentSequence;
+        private InteractableView _currentInteractableView;
+
+        private ReactiveProperty<int> _currentPresses;
         private ReactiveProperty<bool> _isPressingEnabled;
+        private ReactiveEvent<bool> _onWorkCompleteStateChange;
+        public IReadOnlyReactiveEvent<bool> OnWorkStateChanged => _onWorkCompleteStateChange;
         public PressingStateSwitchAction(TAction actionOnComplete, int pressesToComplete)
         {
+            _actionOnComplete = actionOnComplete;
+            _isPressingEnabled= new ReactiveProperty<bool>();
+            _onWorkCompleteStateChange =new ReactiveEvent<bool>();
+            _currentPresses = new ReactiveProperty<int>();  
             
+            _isPressingEnabled.Subscribe((isEnabled =>
+            {
+                if(isEnabled)
+                {
+                    _onWorkCompleteStateChange.Notify(true);
+                    _compositeDisposable = new CompositeDisposable();
+                    var time = 0.2f;
+                    _currentSequence = Utils.GetWorkTween(_currentInteractableView.transform, time, Ease.Unset);
+                    _currentSequence.Play();
+                    
+                    Observable.Interval(TimeSpan.FromSeconds(time)).Subscribe(f =>
+                    {
+                        _currentPresses.Value++;
+                        if (_currentPresses.Value >= pressesToComplete) Complete();
+                    }).AddTo(_compositeDisposable);
+                }
+                else
+                {
+                    Stop();
+                }
+
+            }));
+        }
+
+        private void Stop()
+        {
+            _compositeDisposable?.Dispose();
+            _currentSequence?.Kill();
+        }
+
+        private void Complete()
+        {
+            _isPressingEnabled.Value = false;
+            _currentPresses.Value = 0;
+            _actionOnComplete.ApplyAction(new ContextContainer());
+            _onWorkCompleteStateChange.Notify(false);
         }
         public void ApplyAction(ContextContainer context)
         {
+            InteractedObjectContext currentInteractedObject = null;
+            if(context.TryGetContext(out currentInteractedObject) == false) return;
+            
+            _currentInteractableView = currentInteractedObject.InteractableView;
             _isPressingEnabled.Value = !_isPressingEnabled.Value;
         }
+
     }
     public class ChangeClothingStateAction : IAction
     {
         private readonly ClothingChangerSettings _clothingChangerSettings;
         private readonly Vector3 _dropDirection;
+        private ClothingContext _currentClothingContext;
+
+        public bool HasClothing => _currentClothingContext != null;
 
         public ChangeClothingStateAction(ClothingChangerSettings clothingChangerSettings, Vector3 dropDirection)
         {
@@ -95,11 +152,11 @@ namespace Game.Interactables
         }
         public void ApplyAction(ContextContainer context)
         {
-            ClothingContext clothingContext;
-            if (context.TryGetContext(out clothingContext))
+            if (_currentClothingContext != null)
             {
-                var clothing = clothingContext.Clothing;
-                clothing.SetCurrentClothingStage(_clothingChangerSettings.ResultStage);
+                var clothing = _currentClothingContext.Clothing;
+                
+                clothing.SetCurrentClothingStage(_clothingChangerSettings.ResultStage, _clothingChangerSettings.ResultMesh);
                 
                 var clothingGameObject = clothing.gameObject;
                 clothingGameObject.transform.position = _clothingChangerSettings.DropPosition.position;
@@ -107,9 +164,18 @@ namespace Game.Interactables
                 
                 var dropForce = _dropDirection * _clothingChangerSettings.DropSpeed * 0.3f +
                                 Vector3.up * _clothingChangerSettings.DropSpeed;
-                
                 clothing.Rigidbody.velocity = Vector3.zero;
                 clothing.Rigidbody.AddForce(dropForce, ForceMode.Impulse);
+
+                _currentClothingContext = null;
+                return;
+            }
+            
+            if (context.TryGetContext(out _currentClothingContext))
+            {
+                var clothing = _currentClothingContext.Clothing;
+                clothing.gameObject.SetActive(false);
+                return;
             }
         }
     }

@@ -7,15 +7,28 @@ namespace Game.Clothing
 {
     public class WashingMachine : InteractableView
     {
+        [SerializeField] private WorkMode _workMode;
         [SerializeField] private ParticleSystem _particleOnComplete;
         [SerializeField] private ClothingChangerSettings _clothingChangerSettings;
+        private ChangeClothingStateAction _clothingChangeAction;
         protected override void OnConstruct()
         {
-            var clothingChangeAction = new ChangeClothingStateAction(_clothingChangerSettings, transform.forward);
-            var timedWashingAction = new TimedAction<ChangeClothingStateAction>(clothingChangeAction, 2);
-            AddActionApplier(timedWashingAction, Interaction.Collide);
+            _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerSettings, transform.forward);
+            IWorkAction workAction = null;
             
-            timedWashingAction.OnWorkStateChanged.SubscribeWithSkip((workIsEnabled => // on work end
+            AddActionApplier(_clothingChangeAction, Interaction.Collide);
+            if (_workMode == WorkMode.Automatic)
+            {
+                workAction = new TimedAction<ChangeClothingStateAction>(_clothingChangeAction, 2);
+                AddActionApplier(workAction, Interaction.Collide);
+            }
+            else
+            {
+                workAction = new PressingStateSwitchAction<ChangeClothingStateAction>(_clothingChangeAction, 10);
+                AddActionApplier(workAction, Interaction.OnLookStateChange);
+            }
+            
+            workAction.OnWorkStateChanged.SubscribeWithSkip((workIsEnabled => // on work end
             {
                 if (workIsEnabled)
                 {
@@ -32,10 +45,14 @@ namespace Game.Clothing
 
         protected override bool CanBeInteracted(ContextContainer context, Interaction interactionType)
         {
-            if (context.TryGetContext<ClothingContext>(out var clothing) 
-                && clothing.Clothing.CurrentClothingStage == _clothingChangerSettings.StageToApply)
+            var canClothingBeChanged = context.TryGetContext<ClothingContext>(out var clothing)
+                                       && clothing.Clothing.CurrentClothingStage == _clothingChangerSettings.StageToApply
+                                       && _clothingChangeAction.HasClothing == false;
+            
+            var isAutomaticReady = canClothingBeChanged || 
+                                   interactionType == Interaction.OnLookStateChange && _clothingChangeAction.HasClothing;
+            if (isAutomaticReady)
             {
-                clothing.Clothing.gameObject.SetActive(false); // Такое себе решение, но пока прототип - пусть будет
                 return true;
             }
             return false;
@@ -48,11 +65,13 @@ namespace Game.Clothing
         [SerializeField] private ClothingStage _stageToApply;
         [SerializeField] private ClothingStage _resultStage;
         [SerializeField] private Transform _dropPosition;
+        [SerializeField] private Mesh _resultMesh;
         [SerializeField] private float _dropSpeed;
         
         public ClothingStage StageToApply => _stageToApply;
         public ClothingStage ResultStage => _resultStage;
         public Transform DropPosition => _dropPosition;
+        public Mesh ResultMesh => _resultMesh;
         public float DropSpeed => _dropSpeed;
     }
 
@@ -60,5 +79,11 @@ namespace Game.Clothing
     {
         Dirty,
         Clean,
+    }
+
+    public enum WorkMode
+    {
+        Manual,
+        Automatic
     }
 }

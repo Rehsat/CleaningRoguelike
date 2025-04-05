@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class Utils
 {
-    public static Sequence GetWorkTween(Transform transform, float durationSeconds = 1f)
+    public static Sequence GetWorkTween(Transform transform, float durationSeconds = 1f, Ease ease = Ease.OutBack)
     {
         var startScale = transform.localScale;
         var startPosition = transform.position;
@@ -14,8 +14,8 @@ public static class Utils
         var movePositionY = startPositionY - (startScale.y-scale) / 2f;
         var halfDuration = durationSeconds/2;
         
-        var tween = transform.DOScaleY(scale, halfDuration).SetEase(Ease.OutBack);
-        var tween2 = transform.DOMoveY(movePositionY, halfDuration).SetEase(Ease.OutBack);
+        var tween = transform.DOScaleY(scale, halfDuration).SetEase(ease);
+        var tween2 = transform.DOMoveY(movePositionY, halfDuration).SetEase(ease);
         return DOTween.Sequence()
             .Append(tween)
             .Join(tween2)
