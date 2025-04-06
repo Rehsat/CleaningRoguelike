@@ -70,7 +70,7 @@ namespace Game.Player
                     var holdableTransform = objectHolder.CurrentPickedUpObject.Value.transform;
                     holdableTransform.parent = null;
                     holdableTransform.position += Vector3.up;
-                    objectHolder.Throw(_throwPowerScale, _playerCamera.transform.forward + _characterController.velocity/20);
+                    objectHolder.Throw(_throwPowerScale, _playerCamera.transform.forward);
                 }
             });
         }

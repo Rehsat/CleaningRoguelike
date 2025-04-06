@@ -27,8 +27,9 @@ namespace Game.Player
             _contextContainer = new ContextContainer().
                 AddContext(new ObjectHolderContext(_objectHolder));
 
-            _playerInput.OnInteractButtonPressed.SubscribeWithSkip((() =>
+            _playerInput.OnInteractButtonPressed.SubscribeWithSkip((value =>
             {
+                if(value == false) return;
                 if (_currentInteractable != null)
                     _currentInteractable.Interact(_contextContainer, Interaction.InteractButton);
             }));

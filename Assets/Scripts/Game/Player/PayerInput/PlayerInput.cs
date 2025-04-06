@@ -10,12 +10,12 @@ namespace Game.Player.PayerInput
         
         private readonly ReactiveEvent<Vector2> _onLookPerformed;
         private readonly ReactiveEvent<bool> _onRunningStateChange;
-        private readonly ReactiveTrigger _onInteractButtonPressed;
+        private readonly ReactiveEvent<bool> _onInteractButtonPressStateChange;
         private readonly ReactiveEvent<bool> _onThrowButtonPressStateChange;
 
         public IReadOnlyReactiveEvent<Vector2> OnLookPerformed => _onLookPerformed;
         public IReadOnlyReactiveEvent<bool> OnRunningStateChange => _onRunningStateChange;
-        public IReadOnlyReactiveTrigger OnInteractButtonPressed => _onInteractButtonPressed;
+        public IReadOnlyReactiveEvent<bool> OnInteractButtonPressed => _onInteractButtonPressStateChange;
         public IReadOnlyReactiveEvent<bool> OnThrowButtonPressStateChange => _onThrowButtonPressStateChange;
 
         public PlayerInput()
@@ -23,10 +23,11 @@ namespace Game.Player.PayerInput
             _input = new Input();
             _onRunningStateChange = new ReactiveEvent<bool>();
             _onLookPerformed = new ReactiveEvent<Vector2>();
-            _onInteractButtonPressed = new ReactiveTrigger();
+            _onInteractButtonPressStateChange = new ReactiveEvent<bool>();
             _onThrowButtonPressStateChange = new ReactiveEvent<bool>();
             
-            _input.InputMap.Interact.performed += ctx => _onInteractButtonPressed.Notify();
+            _input.InputMap.Interact.performed += ctx => _onInteractButtonPressStateChange.Notify(true);
+            _input.InputMap.Interact.canceled += ctx => _onInteractButtonPressStateChange.Notify(false);
             
             _input.InputMap.Sprint.performed += ctx => _onRunningStateChange.Notify(true);
             _input.InputMap.Sprint.canceled += ctx => _onRunningStateChange.Notify(false);
