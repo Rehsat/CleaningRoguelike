@@ -10,6 +10,7 @@ namespace Game
         {
             Container.Bind<PlayerInput>().FromNew().AsSingle();
             Container.Bind<ObjectHolder>().FromNew().AsSingle();
+            Container.Bind<PlayerResources>().FromNew().AsSingle();
         }
     }
 }

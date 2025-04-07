@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace Game.Interactables
 {
+    //принял решение хранить все Action в одном фале потому что пока так удобнее. Если будут проблемы - без проблем разделю на несколько
     public class PickUpAction : IAction
     {
         public void ApplyAction(ContextContainer contextContainer)
@@ -176,6 +177,24 @@ namespace Game.Interactables
                 var clothing = _currentClothingContext.Clothing;
                 clothing.gameObject.SetActive(false);
                 return;
+            }
+        }
+    }
+
+    public class ChangeSellablePrice : IAction
+    {
+        private readonly float _changeValue;
+
+        public ChangeSellablePrice(float changeValue)
+        {
+            _changeValue = changeValue;
+        }
+        public void ApplyAction(ContextContainer context)
+        {
+            SellableContext sellableContext = null;
+            if (context.TryGetContext(out sellableContext))
+            {
+                sellableContext.ChangeCostBy(_changeValue);
             }
         }
     }

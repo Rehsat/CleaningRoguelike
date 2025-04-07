@@ -17,6 +17,7 @@ namespace Game.Clothing
             IWorkAction workAction = null;
             
             AddActionApplier(_clothingChangeAction, Interaction.Collide);
+            AddActionApplier(new ChangeSellablePrice(20), Interaction.Collide);
             if (_workMode == WorkMode.Automatic)
             {
                 workAction = new TimedAction<ChangeClothingStateAction>(_clothingChangeAction, 2);
