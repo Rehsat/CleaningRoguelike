@@ -19,9 +19,10 @@ public class Bootstrap : MonoBehaviour
     private PlayerResources _playerResources;
 
     [Inject]
-    public void Construct(PlayerResources resources)
+    public void Construct(PlayerResources resources, ObjectSeller seller)
     {
         _playerResources = resources;
+        seller.SetSellCollider(_sellCollider);
     }
     private void Awake()
     {
@@ -30,7 +31,6 @@ public class Bootstrap : MonoBehaviour
         Cursor.visible = false;
         var clothingFactory = new ClothingFactory(_clothingPrefab);
         var clothingSpawner = new ClothingSpawner(clothingFactory, _clothingSpawnPosition);
-        var objectSeller = new ObjectSeller(_sellCollider, _playerResources);
         _clothingSpawnButton.Construct();
         _clothingSpawnButton.AddActionApplier(clothingSpawner);
         
