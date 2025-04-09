@@ -26,9 +26,14 @@ namespace Game.Clothing
                 if (contextContainer.TryGetContext<SellableContext>(out var sellable))
                 {
                     potentialSellable.gameObject.SetActive(false);
-                    _resources.ChangeResourceBy(Resource.QuotaMoney, sellable.Cost.Value);
+                    _resources.GetResource(Resource.QuotaMoney).ChangeValueBy(sellable.Cost.Value);
                     _sellParticle.transform.position = potentialSellable.transform.position;
                     SpawnParticle(sellable.Cost.Value);
+                }
+
+                if (contextContainer.TryGetContext<ReturnableContext>(out var returnableContext))
+                {
+                    returnableContext.Return();
                 }
 
             });

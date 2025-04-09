@@ -16,6 +16,8 @@ namespace Game.Clothing
         public void ApplyAction(ContextContainer context)
         {
             var newClothing = _clothingFactory.Get();
+            if(newClothing == null) return;
+            
             newClothing.transform.position = _spawnPosition.position;
         }
     }

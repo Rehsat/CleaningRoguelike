@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Game.Clothing;
 using Game.Interactables;
 using Game.UI.Resources;
+using RotaryHeart.Lib.SerializableDictionaryPro;
 using UnityEngine;
 using Zenject;
 
@@ -14,7 +15,8 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] private Transform _clothingSpawnPosition;
     [SerializeField] private InteractableButton _clothingSpawnButton;
     
-    [SerializeField] private QuotaMoneyView _quotaMoneyView;
+    [SerializeField] private ResourceView _quotaResourceView;
+    [SerializeField] private SerializableDictionary<Resource, ResourceView> _resourceViews;
 
     private PlayerResources _playerResources;
 
@@ -29,7 +31,7 @@ public class Bootstrap : MonoBehaviour
         Application.targetFrameRate = 144;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        var clothingFactory = new ClothingFactory(_clothingPrefab);
+        var clothingFactory = new ClothingFactory(_clothingPrefab, _playerResources.GetResource(Resource.ActiveClothing));
         var clothingSpawner = new ClothingSpawner(clothingFactory, _clothingSpawnPosition);
         _clothingSpawnButton.Construct();
         _clothingSpawnButton.AddActionApplier(clothingSpawner);
@@ -39,7 +41,11 @@ public class Bootstrap : MonoBehaviour
 
     private void InitUI()
     {
-        var quotaMoneyPresenter =
-            new ResourcePresenter(_playerResources.GetResource(Resource.QuotaMoney), _quotaMoneyView);
+        foreach (var resourcePair in _resourceViews)
+        {
+            var resourceType = resourcePair.Key;
+            var resourceView = resourcePair.Value;
+            var resourcePresenter = new ResourcePresenter(_playerResources.GetResource(resourceType), resourceView);
+        }
     }
 }

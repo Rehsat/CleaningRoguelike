@@ -1,4 +1,6 @@
-﻿using UniRx;
+﻿using System;
+using EasyFramework.ReactiveTriggers;
+using UniRx;
 
 namespace Game.Interactables.Contexts
 {
@@ -15,6 +17,21 @@ namespace Game.Interactables.Contexts
         public void ChangeCostBy(float value)
         {
             _cost.Value += value;
+        }
+    }
+
+    public class ReturnableContext : IInteractableContext
+    {
+        private readonly ReactiveTrigger _onReturn;
+
+        public ReturnableContext(ReactiveTrigger onReturn)
+        {
+            _onReturn = onReturn;
+        }
+
+        public void Return()
+        {
+            _onReturn.Notify();
         }
     }
 }

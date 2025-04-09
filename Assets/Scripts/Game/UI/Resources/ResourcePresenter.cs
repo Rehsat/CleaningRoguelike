@@ -6,8 +6,11 @@ using UnityEngine;
 
 public class ResourcePresenter 
 {
-    public ResourcePresenter(IReadOnlyReactiveProperty<float> resource, IResourceView resourceView)
+    public ResourcePresenter(ResourceData resource, ResourceView resourceView)
     {
-        resource.Subscribe(resourceView.UpdateResourceValue);
+        resource.CurrentValue.Subscribe(resourceValue=>
+        {
+            resourceView.UpdateResourceValue(resourceValue, resource.MaxValue.Value);
+        });
     }
 }

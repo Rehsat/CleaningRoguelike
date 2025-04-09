@@ -4,7 +4,7 @@ using Zenject;
 
 namespace Game.UI.Resources
 {
-    public class QuotaMoneyView : MonoBehaviour, IResourceView
+    public class ResourceView : MonoBehaviour
     {
         [SerializeField] private TMP_Text _resourceCountText;
         
@@ -13,9 +13,14 @@ namespace Game.UI.Resources
         {
             
         }
-        public void UpdateResourceValue(float value)
+
+        public void SetIcon()
         {
-            _resourceCountText.text = $"{value}/99999";
+            
+        }
+        public void UpdateResourceValue(float value, float maxValue)
+        {
+            _resourceCountText.text = $"{value}/{maxValue}";
         }
     }
 }
