@@ -71,6 +71,15 @@ public partial class @Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowUpgrades"",
+                    ""type"": ""Button"",
+                    ""id"": ""240ec8c3-179b-4f23-94c2-59be2690e826"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +181,17 @@ public partial class @Input: IInputActionCollection2, IDisposable
                     ""action"": ""Throw"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7e573bbe-37d8-47be-ba2b-8f5d87976096"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowUpgrades"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -185,6 +205,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
         m_InputMap_Sprint = m_InputMap.FindAction("Sprint", throwIfNotFound: true);
         m_InputMap_Interact = m_InputMap.FindAction("Interact", throwIfNotFound: true);
         m_InputMap_Throw = m_InputMap.FindAction("Throw", throwIfNotFound: true);
+        m_InputMap_ShowUpgrades = m_InputMap.FindAction("ShowUpgrades", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -251,6 +272,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_InputMap_Sprint;
     private readonly InputAction m_InputMap_Interact;
     private readonly InputAction m_InputMap_Throw;
+    private readonly InputAction m_InputMap_ShowUpgrades;
     public struct InputMapActions
     {
         private @Input m_Wrapper;
@@ -260,6 +282,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_InputMap_Sprint;
         public InputAction @Interact => m_Wrapper.m_InputMap_Interact;
         public InputAction @Throw => m_Wrapper.m_InputMap_Throw;
+        public InputAction @ShowUpgrades => m_Wrapper.m_InputMap_ShowUpgrades;
         public InputActionMap Get() { return m_Wrapper.m_InputMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -284,6 +307,9 @@ public partial class @Input: IInputActionCollection2, IDisposable
             @Throw.started += instance.OnThrow;
             @Throw.performed += instance.OnThrow;
             @Throw.canceled += instance.OnThrow;
+            @ShowUpgrades.started += instance.OnShowUpgrades;
+            @ShowUpgrades.performed += instance.OnShowUpgrades;
+            @ShowUpgrades.canceled += instance.OnShowUpgrades;
         }
 
         private void UnregisterCallbacks(IInputMapActions instance)
@@ -303,6 +329,9 @@ public partial class @Input: IInputActionCollection2, IDisposable
             @Throw.started -= instance.OnThrow;
             @Throw.performed -= instance.OnThrow;
             @Throw.canceled -= instance.OnThrow;
+            @ShowUpgrades.started -= instance.OnShowUpgrades;
+            @ShowUpgrades.performed -= instance.OnShowUpgrades;
+            @ShowUpgrades.canceled -= instance.OnShowUpgrades;
         }
 
         public void RemoveCallbacks(IInputMapActions instance)
@@ -327,5 +356,6 @@ public partial class @Input: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
+        void OnShowUpgrades(InputAction.CallbackContext context);
     }
 }
