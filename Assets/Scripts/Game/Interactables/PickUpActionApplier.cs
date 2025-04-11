@@ -26,23 +26,25 @@ namespace Game.Interactables
         }
     }
 
-    public class TimedAction<TAction> : IWorkAction where TAction : IAction
+    public class TimedAction<TAction> : IProgressModelContainer, IWorkAction where TAction : IAction
     {
         private readonly TAction _action;
-        private readonly float _secondsToComplete;
 
         private ReactiveEvent<bool> _onWorkStateChanged;
-        private ReactiveProperty<float> _timer;
+        private ReactiveProperty<float> _currentSecondsPassed;
+        private ReactiveProperty<float> _secondsToComplete;
         private CompositeDisposable _compositeDisposable;
         private Sequence _sequence;
 
+        public IReadOnlyReactiveProperty<float> CurrentProgress => _currentSecondsPassed;
+        public IReadOnlyReactiveProperty<float> GoalProgress => _secondsToComplete;
         public IReadOnlyReactiveEvent<bool> OnWorkStateChanged => _onWorkStateChanged;
         public TimedAction(TAction action, float secondsToComplete)
         {
             _action = action;
             _onWorkStateChanged = new ReactiveEvent<bool>();
-            _secondsToComplete = secondsToComplete;
-            _timer = new ReactiveProperty<float>(secondsToComplete);
+            _currentSecondsPassed = new ReactiveProperty<float>(0);
+            _secondsToComplete =  new ReactiveProperty<float>(secondsToComplete);
         }
 
         public void ApplyAction(ContextContainer context)
@@ -53,8 +55,8 @@ namespace Game.Interactables
                 : null;
             Observable.EveryUpdate().Subscribe((l =>
             {
-                _timer.Value -= Time.deltaTime;
-                if(_timer.Value <=0) CompleteAction(context);
+                _currentSecondsPassed.Value += Time.deltaTime;
+                if(_currentSecondsPassed.Value >= _secondsToComplete.Value) CompleteAction(context);
             })).AddTo(_compositeDisposable);
             
             _onWorkStateChanged.Notify(true);
@@ -64,12 +66,12 @@ namespace Game.Interactables
         {
             _sequence?.Kill();
             _compositeDisposable.Dispose();
-            _timer.Value = _secondsToComplete;
-            Debug.LogError(_timer.Value);
+            _currentSecondsPassed.Value = 0;
             _action.ApplyAction(context); 
             
             _onWorkStateChanged.Notify(false);
         }
+
     }
 
     public class PressingStateSwitchAction<TAction> : IWorkAction where TAction : IAction // seems like this class is for OnLookAction only
@@ -80,16 +82,21 @@ namespace Game.Interactables
         private Sequence _currentSequence;
         private InteractableView _currentInteractableView;
 
-        private ReactiveProperty<int> _currentPresses;
+        private ReactiveProperty<float> _currentPresses;
+        private ReactiveProperty<float> _pressesToComplete;
         private ReactiveProperty<bool> _isPressingEnabled;
         private ReactiveEvent<bool> _onWorkCompleteStateChange;
         public IReadOnlyReactiveEvent<bool> OnWorkStateChanged => _onWorkCompleteStateChange;
+
+        public IReadOnlyReactiveProperty<float> CurrentProgress => _currentPresses;
+        public IReadOnlyReactiveProperty<float> GoalProgress => _pressesToComplete;
         public PressingStateSwitchAction(TAction actionOnComplete, int pressesToComplete)
         {
             _actionOnComplete = actionOnComplete;
             _isPressingEnabled= new ReactiveProperty<bool>();
             _onWorkCompleteStateChange =new ReactiveEvent<bool>();
-            _currentPresses = new ReactiveProperty<int>();  
+            _currentPresses = new ReactiveProperty<float>();  
+            _pressesToComplete = new ReactiveProperty<float>(pressesToComplete);
             
             _isPressingEnabled.Subscribe((isEnabled =>
             {
@@ -104,7 +111,7 @@ namespace Game.Interactables
                     Observable.Interval(TimeSpan.FromSeconds(time)).Subscribe(f =>
                     {
                         _currentPresses.Value++;
-                        if (_currentPresses.Value >= pressesToComplete) Complete();
+                        if (_currentPresses.Value >= _pressesToComplete.Value) Complete();
                     }).AddTo(_compositeDisposable);
                 }
                 else
@@ -136,7 +143,6 @@ namespace Game.Interactables
             _currentInteractableView = currentInteractedObject.InteractableView;
             _isPressingEnabled.Value = !_isPressingEnabled.Value;
         }
-
     }
     public class ChangeClothingStateAction : IAction
     {

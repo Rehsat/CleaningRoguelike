@@ -7,7 +7,7 @@ namespace Game.Interactables
         public void ApplyAction(ContextContainer context);
     }
 
-    public interface IWorkAction : IAction
+    public interface IWorkAction : IAction, IProgressModelContainer
     {
         public IReadOnlyReactiveEvent<bool> OnWorkStateChanged { get; }
     }

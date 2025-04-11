@@ -1,5 +1,6 @@
 using System;
 using Game.Interactables;
+using Game.UI.Interactables;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,7 +11,10 @@ namespace Game.Clothing
         [SerializeField] private WorkMode _workMode;
         [SerializeField] private ParticleSystem _particleOnComplete;
         [SerializeField] private ClothingChangerSettings _clothingChangerSettings;
+        [SerializeField] private ProgressBarView _progressBarView;
         private ChangeClothingStateAction _clothingChangeAction;
+        
+        // TODO отрефакторить, чтоб был констракт в фабрике
         protected override void OnConstruct()
         {
             _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerSettings, transform.forward);
@@ -29,19 +33,24 @@ namespace Game.Clothing
                 AddActionApplier(workAction, Interaction.OnLookStateChange);
             }
             
-            workAction.OnWorkStateChanged.SubscribeWithSkip((workIsEnabled => // on work end
+            workAction.OnWorkStateChanged.SubscribeWithSkip(OnWorkEnabledStateChange);
+            _progressBarView.gameObject.SetActive(false);
+            var progressBarPresenter = new ProgressPresenter(workAction, _progressBarView);
+        }
+
+        private void OnWorkEnabledStateChange(bool isWorkEnabled)
+        {
+            _progressBarView.gameObject.SetActive(isWorkEnabled);
+            if (isWorkEnabled)
             {
-                if (workIsEnabled)
-                {
-                    _particleOnComplete.gameObject.SetActive(false);
-                }
-                else
-                {
-                    var particlePosition = _clothingChangerSettings.DropPosition.position;
-                    _particleOnComplete.transform.position = particlePosition;
-                    _particleOnComplete.gameObject.SetActive(true);
-                }
-            }));
+                _particleOnComplete.gameObject.SetActive(false);
+            }
+            else
+            {
+                var particlePosition = _clothingChangerSettings.DropPosition.position;
+                _particleOnComplete.transform.position = particlePosition;
+                _particleOnComplete.gameObject.SetActive(true);
+            }
         }
 
         protected override bool CanBeInteracted(ContextContainer context, Interaction interactionType)
