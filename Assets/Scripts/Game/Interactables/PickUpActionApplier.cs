@@ -104,7 +104,7 @@ namespace Game.Interactables
                 {
                     _onWorkCompleteStateChange.Notify(true);
                     _compositeDisposable = new CompositeDisposable();
-                    var time = 0.2f;
+                    var time = 0.25f;
                     _currentSequence = Utils.GetWorkTween(_currentInteractableView.transform, time, Ease.Unset);
                     _currentSequence.Play();
                     

@@ -24,8 +24,16 @@ public class UpgradesWorldView : MonoBehaviour
             if (_isAnimationInProgress) return;
             _isUpgradeShowed.Value = !_isUpgradeShowed.Value;
         }));
+
+        var isFirstTime = true;
         _isUpgradeShowed.Subscribe((isShowing =>
         {
+            if (isFirstTime)
+            {
+                isFirstTime = false;
+                return;
+            }
+            
             _isAnimationInProgress = true;
             
             var resultRotation = isShowing ? _showRotation : _hideRotation;

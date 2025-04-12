@@ -1,14 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ProgressBarView : MonoBehaviour
+namespace Game.UI.Interactables
 {
-    [SerializeField] private Image _progressBar;
-
-    public void SetProgress(float currentValue, float goalValue) // в теории можно заменить сразу на fill amount, но пока не мешает - почему бы и нет
+    public class ProgressBarView : MonoBehaviour
     {
-        _progressBar.fillAmount = currentValue / goalValue;
+        [SerializeField] private Image _progressBar;
+
+        public void SetProgress(float currentValue, float goalValue) // в теории можно заменить сразу на fill amount, но пока не мешает - почему бы и нет
+        {
+            _progressBar.fillAmount = currentValue / goalValue;
+            OnProgressSet(currentValue, goalValue);
+        }
+        protected virtual void OnProgressSet(float currentValue, float goalValue){}
     }
 }

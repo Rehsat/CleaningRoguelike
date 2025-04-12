@@ -49,7 +49,6 @@ namespace Game.Player
             {
                 var newSelectedInteractable = hit.collider.GetComponent<InteractableView>();
                 
-                UnselectCurrentInteractable();
                 SelectInteractable(newSelectedInteractable);
             }
             else
@@ -64,6 +63,9 @@ namespace Game.Player
         private void SelectInteractable(InteractableView newSelectedInteractable)
         {
             if(newSelectedInteractable == _currentInteractable) return;
+            
+            UnselectCurrentInteractable();
+            
             _currentInteractable = newSelectedInteractable;
             _currentInteractable.Interact(_contextContainer, Interaction.OnLookStateChange);
             _currentInteractable.SetIsSelectedState(true);
