@@ -11,7 +11,7 @@ namespace Game.Interactables
     public class InteractableView : MonoBehaviour, IContextContainer
     {
         [SerializeField] private Outline _outline;
-
+        [SerializeField] private bool aimHelpEnabled;
         private Color _unselectedColor;
         private float _startOutlineWidth;
         private bool _wasConstructed;
@@ -20,6 +20,8 @@ namespace Game.Interactables
         private Dictionary<Interaction, List<IAction>> _actions;
 
         protected ContextContainer MyContextContainer => _contextContainer;
+        public bool AimHelpEnabled => aimHelpEnabled;
+
         private void Start()
         {
             Construct();

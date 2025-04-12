@@ -288,6 +288,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 32594844}
+  aimHelpEnabled: 0
 --- !u!1 &38520684
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,6 +529,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 210226440}
+  aimHelpEnabled: 0
   _workMode: 0
   _particleOnComplete: {fileID: 2075291558}
   _clothingChangerSettings:
@@ -1763,6 +1765,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 530520348}
+  aimHelpEnabled: 0
 --- !u!1001 &531446375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2033,6 +2036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 551216750}
+  aimHelpEnabled: 0
 --- !u!1 &608921521
 GameObject:
   m_ObjectHideFlags: 0
@@ -3287,6 +3291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 1030572709}
+  aimHelpEnabled: 0
 --- !u!114 &1030572709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3955,6 +3960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 1223787314}
+  aimHelpEnabled: 0
 --- !u!1 &1229495675
 GameObject:
   m_ObjectHideFlags: 0
@@ -5224,6 +5230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 1595331055}
+  aimHelpEnabled: 0
 --- !u!1 &1658312508
 GameObject:
   m_ObjectHideFlags: 0
@@ -10874,6 +10881,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 1860835975}
+  aimHelpEnabled: 1
   _interactionToAnimate: 0
   _scaleOnPress: 0.5
   _secondsToAnimate: 0.15
@@ -11008,6 +11016,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 1946555738}
+  aimHelpEnabled: 0
   _workMode: 1
   _particleOnComplete: {fileID: 905196749}
   _clothingChangerSettings:
@@ -11563,6 +11572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outline: {fileID: 1986988699}
+  aimHelpEnabled: 0
 --- !u!198 &2075291558 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 19855650, guid: fe394d041df1a0547990f49cf653249f, type: 3}

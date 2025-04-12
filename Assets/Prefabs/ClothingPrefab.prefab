@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6246152938611524121}
+  - component: {fileID: -3993634032090868424}
   - component: {fileID: 7199685297600673572}
   - component: {fileID: 5963078873438662639}
   - component: {fileID: 7164905555490020849}
   - component: {fileID: 7855296925775202293}
-  - component: {fileID: -3993634032090868424}
   - component: {fileID: 1331135287875604067}
   - component: {fileID: 306731335297158598}
   - component: {fileID: 8474094255751460434}
@@ -39,6 +39,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3993634032090868424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8454115162273225924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed3b82fd5a0246c284bb04c6465c66e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outline: {fileID: 7855296925775202293}
+  aimHelpEnabled: 1
+  _rigidbody: {fileID: 7164905555490020849}
+  _meshUpdater: {fileID: 306731335297158598}
+  _colliderContextDeliver: {fileID: 1331135287875604067}
+  _currentClothingStage: 0
 --- !u!33 &7199685297600673572
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -134,23 +152,6 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
---- !u!114 &-3993634032090868424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8454115162273225924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed3b82fd5a0246c284bb04c6465c66e7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _outline: {fileID: 7855296925775202293}
-  _rigidbody: {fileID: 7164905555490020849}
-  _meshUpdater: {fileID: 306731335297158598}
-  _colliderContextDeliver: {fileID: 1331135287875604067}
-  _currentClothingStage: 0
 --- !u!114 &1331135287875604067
 MonoBehaviour:
   m_ObjectHideFlags: 0

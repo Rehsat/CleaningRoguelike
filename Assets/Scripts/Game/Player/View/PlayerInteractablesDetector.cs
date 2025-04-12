@@ -10,7 +10,9 @@ namespace Game.Player
 {
     public class PlayerInteractablesDetector: MonoBehaviour
     {
-        [Header("Raycast Settings")] public float _interactDistance = 3f;
+        [Header("Raycast Settings")]
+        [SerializeField] private float _interactDistance = 3f;
+        [SerializeField] private float _coneAngle = 45;
 
         public LayerMask _interactableLayer;
         private InteractableView _currentInteractable;
@@ -24,7 +26,7 @@ namespace Game.Player
             _playerCamera = playerCamera;
             _playerInput = playerInput;
             _objectHolder = objectHolder;
-            _contextContainer = new ContextContainer().
+            _contextContainer = new ContextContainer(). //TODO переписать чтоб логика была на более высоком слое
                 AddContext(new ObjectHolderContext(_objectHolder));
 
             _playerInput.OnInteractButtonPressed.SubscribeWithSkip((value =>
@@ -46,17 +48,55 @@ namespace Game.Player
             if (Physics.Raycast(ray, out hit, _interactDistance, _interactableLayer))
             {
                 var newSelectedInteractable = hit.collider.GetComponent<InteractableView>();
-                if(newSelectedInteractable == _currentInteractable) return;
                 
                 UnselectCurrentInteractable();
-                _currentInteractable = newSelectedInteractable;
-                _currentInteractable.Interact(_contextContainer, Interaction.OnLookStateChange);
-                _currentInteractable.SetIsSelectedState(true);
+                SelectInteractable(newSelectedInteractable);
             }
             else
             {
                 UnselectCurrentInteractable();
+                var interactableInCone = GetInteractablesWithCone();
+                if(interactableInCone != null)
+                    SelectInteractable(interactableInCone);
             }
+        }
+
+        private void SelectInteractable(InteractableView newSelectedInteractable)
+        {
+            if(newSelectedInteractable == _currentInteractable) return;
+            _currentInteractable = newSelectedInteractable;
+            _currentInteractable.Interact(_contextContainer, Interaction.OnLookStateChange);
+            _currentInteractable.SetIsSelectedState(true);
+        }
+
+        private InteractableView GetInteractablesWithCone()
+        {
+            Vector3 cameraPos = _playerCamera.transform.position;
+            Vector3 cameraForward = _playerCamera.transform.forward;
+            Collider[] allHits = Physics.OverlapSphere(cameraPos, _interactDistance, _interactableLayer);
+
+            InteractableView closestInteractable = null;
+            float closestDistance = Mathf.Infinity;
+
+            foreach (Collider col in allHits)
+            {
+                Vector3 dirToObj = (col.transform.position - cameraPos).normalized;
+                float angle = Vector3.Angle(cameraForward, dirToObj);
+
+                if (angle <= _coneAngle / 2f)
+                {
+                    float distance = Vector3.Distance(cameraPos, col.transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestInteractable = col.GetComponent<InteractableView>();
+                        if (closestInteractable.AimHelpEnabled)
+                            return closestInteractable;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private void UnselectCurrentInteractable()
