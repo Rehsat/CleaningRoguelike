@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game.Clothing;
+using Game.GameStateMachine;
 using Game.Interactables;
 using Game.UI.Resources;
 using RotaryHeart.Lib.SerializableDictionaryPro;
@@ -19,11 +20,13 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] private SerializableDictionary<Resource, ResourceView> _resourceViews;
 
     private PlayerResources _playerResources;
+    private GameStateMachine _gameStateMachine;
 
     [Inject]
-    public void Construct(PlayerResources resources, ObjectSeller seller)
+    public void Construct(PlayerResources resources, ObjectSeller seller, GameStateMachine gameStateMachine)
     {
         _playerResources = resources;
+        _gameStateMachine = gameStateMachine;
         seller.SetSellCollider(_sellCollider);
     }
     private void Awake()
@@ -35,8 +38,9 @@ public class Bootstrap : MonoBehaviour
         var clothingSpawner = new ClothingSpawner(clothingFactory, _clothingSpawnPosition);
         _clothingSpawnButton.Construct();
         _clothingSpawnButton.AddActionApplier(clothingSpawner);
-        
         InitUI();
+        
+        _gameStateMachine.EnterState<UpgradeState>();
     }
 
     private void InitUI()

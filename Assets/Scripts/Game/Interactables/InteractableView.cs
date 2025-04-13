@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using EasyFramework.ReactiveEvents;
+using EasyFramework.ReactiveTriggers;
 using Game.Player.Data;
+using UniRx;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -16,6 +18,7 @@ namespace Game.Interactables
         private float _startOutlineWidth;
         private bool _wasConstructed;
 
+        private ReactiveProperty<bool> _isEnabled;
         private ContextContainer _contextContainer;
         private Dictionary<Interaction, List<IAction>> _actions;
 
@@ -31,7 +34,13 @@ namespace Game.Interactables
         {
             if(_wasConstructed) return;
             _wasConstructed = true;
-
+            
+            _isEnabled = new ReactiveProperty<bool>(true);
+            _isEnabled.Subscribe((isEnabled =>
+            {
+                _outline.enabled = isEnabled;
+            }));
+            
             _actions = new Dictionary<Interaction, List<IAction>>();
             foreach (Interaction interaction in Enum.GetValues(typeof(Interaction)))
                 _actions.Add(interaction, new List<IAction>());
@@ -41,10 +50,9 @@ namespace Game.Interactables
             
             _contextContainer = new ContextContainer();
             _contextContainer.AddContext(new InteractedObjectContext(this));
+            
             OnConstruct();
         }
-
-        protected virtual void OnConstruct(){}
 
         public InteractableView AddActionApplier(IAction action, Interaction interactionType = Interaction.InteractButton)
         {
@@ -57,9 +65,14 @@ namespace Game.Interactables
             _outline.OutlineWidth = isSelected ? _startOutlineWidth * 3 : _startOutlineWidth;
         }
 
+        public void SetEnabled(bool isEnabled)
+        {
+            _isEnabled.Value = isEnabled;
+        }
+
         public void Interact(ContextContainer context, Interaction interactionType)
         {
-            if(CanBeInteracted(context,interactionType) == false) return;
+            if(_isEnabled.Value == false && CanBeInteracted(context,interactionType) == false) return;
             
             var resultContext = new ContextContainer()
                 .AddContext(_contextContainer)
@@ -68,16 +81,6 @@ namespace Game.Interactables
             _actions[interactionType].ForEach(action => action.ApplyAction(resultContext));
             OnInteract(resultContext, interactionType);
         }
-
-        protected virtual bool CanBeInteracted(ContextContainer context, Interaction interactionType){return true;}
-        protected virtual void OnInteract(ContextContainer context, Interaction interactionType){}
-
-        public void OnValidate()
-        {
-            if (_outline == null)
-                _outline = GetComponent<Outline>();
-        }
-
         public ContextContainer AddContext<TContext>(TContext context) where TContext : IInteractableContext
         {
             _contextContainer.AddContext(context);
@@ -87,6 +90,17 @@ namespace Game.Interactables
         public bool TryGetContext<TContext>(out TContext context) where TContext : IInteractableContext
         {
             return _contextContainer.TryGetContext(out context);
+        }
+
+
+        protected virtual void OnConstruct(){}
+        protected virtual bool CanBeInteracted(ContextContainer context, Interaction interactionType){return true;}
+        protected virtual void OnInteract(ContextContainer context, Interaction interactionType){}
+
+        public void OnValidate()
+        {
+            if (_outline == null)
+                _outline = GetComponent<Outline>();
         }
     }
 

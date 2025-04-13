@@ -35,7 +35,7 @@ namespace Game.Player
                 if (_currentInteractable != null)
                     _currentInteractable.Interact(_contextContainer, Interaction.InteractButton);
             }));
-            Observable.Interval(TimeSpan.FromSeconds(0.15f)).Subscribe((l =>
+            Observable.Interval(TimeSpan.FromSeconds(0.05f)).Subscribe((l =>
             {
                 CheckForInteractables();
             }));

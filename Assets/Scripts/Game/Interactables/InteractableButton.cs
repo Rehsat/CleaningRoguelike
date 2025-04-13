@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using EasyFramework.ReactiveTriggers;
 using UnityEngine;
 using Zenject;
 
@@ -11,7 +12,16 @@ namespace Game.Interactables
         [SerializeField] private float _secondsToAnimate = 0.3f;
         private float? _startScale;
         private Sequence _sequence;
-        
+        private ReactiveTrigger _onInteracted;
+
+        public ReactiveTrigger OnInteracted => _onInteracted;
+
+        protected override void OnConstruct()
+        {
+            base.OnConstruct();
+            _onInteracted = new ReactiveTrigger();
+        }
+
         protected override void OnInteract(ContextContainer context, Interaction interactionType)
         {
             if(_interactionToAnimate != interactionType) return;
@@ -26,6 +36,8 @@ namespace Game.Interactables
             _sequence.Append(transform.DOScaleZ((float)_startScale * _scaleOnPress,_secondsToAnimate )
                 .SetLoops(2, LoopType.Yoyo));
             _sequence.Play();
+            
+            _onInteracted.Notify();
         }
     }
 }
