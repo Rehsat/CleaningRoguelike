@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -25,5 +26,11 @@ public static class Utils
                 transform.localScale = startScale;
                 transform.position = startPosition;
             });
+    }
+    
+    public static double GetTimeDifferenceInMinutes(this DateTime time1, DateTime time2)
+    {
+        TimeSpan difference = time1 - time2;
+        return Math.Abs(difference.TotalMinutes);
     }
 }

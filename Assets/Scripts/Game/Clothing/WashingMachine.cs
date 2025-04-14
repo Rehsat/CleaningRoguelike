@@ -10,14 +10,14 @@ namespace Game.Clothing
     {
         [SerializeField] private WorkMode _workMode;
         [SerializeField] private ParticleSystem _particleOnComplete;
-        [SerializeField] private ClothingChangerSettings _clothingChangerSettings;
         [SerializeField] private ProgressBarView _progressBarView;
+        [SerializeField] private ClothingChangerConfig _clothingChangerConfig;
         private ChangeClothingStateAction _clothingChangeAction;
         
         // TODO отрефакторить, чтоб был констракт в фабрике
         protected override void OnConstruct()
         {
-            _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerSettings, transform.forward);
+            _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerConfig, transform.forward);
             IWorkAction workAction = null;
             
             AddActionApplier(_clothingChangeAction, Interaction.Collide);
@@ -38,6 +38,12 @@ namespace Game.Clothing
             var progressBarPresenter = new ProgressPresenter(workAction, _progressBarView);
         }
 
+        public void SetConfig(ClothingChangerConfig config)
+        {
+            _clothingChangerConfig = config;
+            
+        }
+
         private void OnWorkEnabledStateChange(bool isWorkEnabled)
         {
             _progressBarView.gameObject.SetActive(isWorkEnabled);
@@ -47,7 +53,7 @@ namespace Game.Clothing
             }
             else
             {
-                var particlePosition = _clothingChangerSettings.DropPosition.position;
+                var particlePosition = _clothingChangerConfig.DropPosition.position;
                 _particleOnComplete.transform.position = particlePosition;
                 _particleOnComplete.gameObject.SetActive(true);
             }
@@ -56,7 +62,7 @@ namespace Game.Clothing
         protected override bool CanBeInteracted(ContextContainer context, Interaction interactionType)
         {
             var canClothingBeChanged = context.TryGetContext<ClothingContext>(out var clothing)
-                                       && clothing.Clothing.CurrentClothingStage == _clothingChangerSettings.StageToApply
+                                       && clothing.Clothing.CurrentClothingStage == _clothingChangerConfig.StageToApply
                                        && _clothingChangeAction.HasClothing == false;
             
             var isAutomaticReady = canClothingBeChanged || 
@@ -70,7 +76,7 @@ namespace Game.Clothing
     }
 
     [Serializable]
-    public class ClothingChangerSettings
+    public struct ClothingChangerConfig
     {
         [SerializeField] private ClothingStage _stageToApply;
         [SerializeField] private ClothingStage _resultStage;
@@ -83,6 +89,19 @@ namespace Game.Clothing
         public Transform DropPosition => _dropPosition;
         public Mesh ResultMesh => _resultMesh;
         public float DropSpeed => _dropSpeed;
+        public ClothingChangerConfig(
+            ClothingStage stageToApply,
+            ClothingStage resultStage,
+            Transform dropPosition,
+            Mesh resultMesh,
+            float dropSpeed)
+        {
+            _stageToApply = stageToApply;
+            _resultStage = resultStage;
+            _dropPosition = dropPosition;
+            _resultMesh = resultMesh;
+            _dropSpeed = dropSpeed;
+        }
     }
 
     public enum ClothingStage

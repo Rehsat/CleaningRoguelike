@@ -146,15 +146,15 @@ namespace Game.Interactables
     }
     public class ChangeClothingStateAction : IAction
     {
-        private readonly ClothingChangerSettings _clothingChangerSettings;
+        private readonly ClothingChangerConfig _clothingChangerConfig;
         private readonly Vector3 _dropDirection;
         private ClothingContext _currentClothingContext;
 
         public bool HasClothing => _currentClothingContext != null;
 
-        public ChangeClothingStateAction(ClothingChangerSettings clothingChangerSettings, Vector3 dropDirection)
+        public ChangeClothingStateAction(ClothingChangerConfig clothingChangerConfig, Vector3 dropDirection)
         {
-            _clothingChangerSettings = clothingChangerSettings;
+            _clothingChangerConfig = clothingChangerConfig;
             _dropDirection = dropDirection;
         }
         public void ApplyAction(ContextContainer context)
@@ -163,14 +163,14 @@ namespace Game.Interactables
             {
                 var clothing = _currentClothingContext.Clothing;
                 
-                clothing.SetCurrentClothingStage(_clothingChangerSettings.ResultStage, _clothingChangerSettings.ResultMesh);
+                clothing.SetCurrentClothingStage(_clothingChangerConfig.ResultStage, _clothingChangerConfig.ResultMesh);
                 
                 var clothingGameObject = clothing.gameObject;
-                clothingGameObject.transform.position = _clothingChangerSettings.DropPosition.position;
+                clothingGameObject.transform.position = _clothingChangerConfig.DropPosition.position;
                 clothingGameObject.SetActive(true);
                 
-                var dropForce = _dropDirection * _clothingChangerSettings.DropSpeed * 0.3f +
-                                Vector3.up * _clothingChangerSettings.DropSpeed;
+                var dropForce = _dropDirection * _clothingChangerConfig.DropSpeed * 0.3f +
+                                Vector3.up * _clothingChangerConfig.DropSpeed;
                 clothing.Rigidbody.velocity = Vector3.zero;
                 clothing.Rigidbody.AddForce(dropForce, ForceMode.Impulse);
 

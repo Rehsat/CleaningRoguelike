@@ -1,5 +1,6 @@
 using Game.Clothing;
 using Game.GameStateMachine;
+using Game.Interactables.Factories;
 using Game.Player.Data;
 using Game.Player.PayerInput;
 using UnityEngine;
@@ -16,6 +17,8 @@ namespace Game
             Container.BindInstance(_prefabsContainer).AsSingle();
             Container.BindInstance(_sceneObjects).AsSingle();
             
+            InstallFactories();
+            
             Container.Bind<PlayerInput>().FromNew().AsSingle();
             Container.Bind<ObjectHolder>().FromNew().AsSingle();
             Container.Bind<PlayerResources>().FromNew().AsSingle();
@@ -25,6 +28,11 @@ namespace Game
             InstallStateMachine();
         }
 
+        private void InstallFactories()
+        {
+            var washingMachinePrefab = _prefabsContainer.GetPrefabsComponent<WashingMachine>(Prefab.WashingMachine);
+            Container.BindInstance(new WashingMachineFactory(washingMachinePrefab)).AsSingle();
+        }
         private void InstallStateMachine()
         {
             Container.Bind<ILevelState>().To<UpgradeState>().AsSingle();

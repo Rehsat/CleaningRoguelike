@@ -368,7 +368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefabsContainer: {fileID: 11400000, guid: aa932b7951e7c1440ace6dd61f6185af, type: 2}
-  _sceneObjects: {fileID: 0}
+  _sceneObjects: {fileID: 38520688}
 --- !u!114 &38520688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3813,7 +3813,7 @@ MonoBehaviour:
   _rootTransform: {fileID: 1273866789}
   _showRotation: -90
   _hideRotation: 20
-  _animationDuration: 0.5
+  _animationDuration: 0.35
 --- !u!1 &1306443133
 GameObject:
   m_ObjectHideFlags: 0

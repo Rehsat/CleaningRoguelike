@@ -11,11 +11,26 @@ namespace Game
         {
             return _prefabs[prefabType];
         }
+
+        public TComponent GetPrefabsComponent<TComponent>(Prefab prefabType) where TComponent : Component
+        {
+            if (GetPrefab(prefabType).TryGetComponent<TComponent>(out var component))
+            {
+                return component;
+            }
+            else
+            {
+                Debug.LogError($"There is no component{typeof(TComponent)} on {prefabType}");
+                return null;
+            }
+            
+        }
     }
 
     public enum Prefab
     {
         SellParticle = 0,
+        WashingMachine = 1,
         
     }
 }

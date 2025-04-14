@@ -72,7 +72,7 @@ namespace Game.Interactables
 
         public void Interact(ContextContainer context, Interaction interactionType)
         {
-            if(_isEnabled.Value == false && CanBeInteracted(context,interactionType) == false) return;
+            if(_isEnabled.Value == false || CanBeInteracted(context,interactionType) == false) return;
             
             var resultContext = new ContextContainer()
                 .AddContext(_contextContainer)

@@ -2,6 +2,7 @@ using EasyFramework.ReactiveTriggers;
 using Game.Interactables;
 using Game.Interactables.Contexts;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Clothing
 {
@@ -16,7 +17,7 @@ namespace Game.Clothing
             _activeClothingResource = activeClothingResource;
         }
 
-        public ClothingView Get()
+        public ClothingView Create()
         {
             if (_activeClothingResource.IsCurrentValueMaximum)
                 return null;
