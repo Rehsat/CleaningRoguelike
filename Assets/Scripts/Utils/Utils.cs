@@ -33,4 +33,20 @@ public static class Utils
         TimeSpan difference = time1 - time2;
         return Math.Abs(difference.TotalMinutes);
     }
+
+    public static Vector3 ToVector(this Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Up:
+                return Vector3.up;
+            case Direction.Down:
+                return Vector3.down;
+            case Direction.Left:
+                return Vector3.left;
+            case Direction.Right:
+                return Vector3.right;
+        }
+        throw new ArgumentOutOfRangeException();
+    }
 }

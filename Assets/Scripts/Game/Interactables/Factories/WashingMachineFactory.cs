@@ -21,7 +21,7 @@ namespace Game.Interactables.Factories
         public WashingMachine Create(ClothingChangerConfig config)
         {
             var washingMachine = Object.Instantiate(_prefab);
-            washingMachine.SetConfig(config); //TODO добавить сюда инициализацию экшенов и контекстов
+            //washingMachine.SetConfig(config); //TODO добавить сюда инициализацию экшенов и контекстов
             
             _onWashingMachineCreated.Notify(washingMachine);
             return washingMachine;
