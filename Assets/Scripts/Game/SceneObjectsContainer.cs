@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Clothing;
 using Game.Interactables.Factories;
 using RotaryHeart.Lib.SerializableDictionaryPro;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -25,6 +26,7 @@ public class SceneObjectsContainer : MonoBehaviour
             newMachine.transform.position = position.position;
         });
     }
+
     public GameObject GetObject(SceneObject sceneObject)
     {
         return _sceneObjects[sceneObject];

@@ -1,19 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EasyFramework.ReactiveEvents;
 using UniRx;
 using UnityEngine;
 
 public class StateMachine<T> where T : IState
 {
     private ReactiveProperty<IState> _currentState;
+    private ReactiveEvent<IState> _onStateChange;
     private CompositeDisposable _compositeDisposable;
-    protected Dictionary<Type, T> States;
     
+    protected Dictionary<Type, T> States;
+
+    public ReactiveEvent<IState> OnStateChange => _onStateChange;
+
     public StateMachine(List<T> states)
     {
         States = new Dictionary<Type, T>();
         _compositeDisposable = new CompositeDisposable();
+        _onStateChange = new ReactiveEvent<IState>();
             
         foreach (var state in states)
         {
@@ -21,10 +27,10 @@ public class StateMachine<T> where T : IState
         }
 
         _currentState = new ReactiveProperty<IState>(states[0]);
-        Observable.EveryUpdate().Subscribe(f =>
-        {
-            _currentState.Value.OnUpdate();
-        }).AddTo(_compositeDisposable);
+        _currentState.Subscribe(currentState => _onStateChange.Notify(currentState));
+        
+        Observable.EveryUpdate().Subscribe(f => _currentState.Value.OnUpdate())
+            .AddTo(_compositeDisposable);
     }
 
     public void EnterState<TState>() where TState : T

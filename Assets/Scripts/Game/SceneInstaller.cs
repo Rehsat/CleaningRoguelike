@@ -39,6 +39,7 @@ namespace Game
             Container.Bind<ILevelState>().To<WorkState>().AsSingle();
 
             Container.Bind<GameStateMachine.GameStateMachine>().FromNew().AsSingle();
+            Container.Bind<CurrentGameStateObserver>().FromNew().AsSingle();
         }
     }
 }
