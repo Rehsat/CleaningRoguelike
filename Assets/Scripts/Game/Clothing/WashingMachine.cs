@@ -12,12 +12,15 @@ namespace Game.Clothing
         [SerializeField] private ParticleSystem _particleOnComplete;
         [SerializeField] private ProgressBarView _progressBarView;
         [SerializeField] private ClothingChangerConfig _clothingChangerConfig;
+        [SerializeField] private Transform _dropPosition;
         private ChangeClothingStateAction _clothingChangeAction;
-        
+
+        public Transform DropPosition => _dropPosition;
+
         // TODO отрефакторить, чтоб был констракт в фабрике
         protected override void OnConstruct()
         {
-            _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerConfig, transform.forward);
+            _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerConfig, _dropPosition, transform.forward);
             IWorkAction workAction = null;
             
             AddActionApplier(_clothingChangeAction, Interaction.Collide);
@@ -53,7 +56,7 @@ namespace Game.Clothing
             }
             else
             {
-                var particlePosition = _clothingChangerConfig.DropPosition.position;
+                var particlePosition = _dropPosition.position;
                 _particleOnComplete.transform.position = particlePosition;
                 _particleOnComplete.gameObject.SetActive(true);
             }
@@ -80,25 +83,21 @@ namespace Game.Clothing
     {
         [SerializeField] private ClothingStage _stageToApply;
         [SerializeField] private ClothingStage _resultStage;
-        [SerializeField] private Transform _dropPosition;
         [SerializeField] private Mesh _resultMesh;
         [SerializeField] private float _dropSpeed;
         
         public ClothingStage StageToApply => _stageToApply;
         public ClothingStage ResultStage => _resultStage;
-        public Transform DropPosition => _dropPosition;
         public Mesh ResultMesh => _resultMesh;
         public float DropSpeed => _dropSpeed;
         public ClothingChangerConfig(
             ClothingStage stageToApply,
             ClothingStage resultStage,
-            Transform dropPosition,
             Mesh resultMesh,
             float dropSpeed)
         {
             _stageToApply = stageToApply;
             _resultStage = resultStage;
-            _dropPosition = dropPosition;
             _resultMesh = resultMesh;
             _dropSpeed = dropSpeed;
         }

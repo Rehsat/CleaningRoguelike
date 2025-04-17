@@ -147,14 +147,16 @@ namespace Game.Interactables
     public class ChangeClothingStateAction : IAction
     {
         private readonly ClothingChangerConfig _clothingChangerConfig;
+        private readonly Transform _dropPosition;
         private readonly Vector3 _dropDirection;
         private ClothingContext _currentClothingContext;
 
         public bool HasClothing => _currentClothingContext != null;
 
-        public ChangeClothingStateAction(ClothingChangerConfig clothingChangerConfig, Vector3 dropDirection)
+        public ChangeClothingStateAction(ClothingChangerConfig clothingChangerConfig, Transform dropPosition, Vector3 dropDirection)
         {
             _clothingChangerConfig = clothingChangerConfig;
+            _dropPosition = dropPosition;
             _dropDirection = dropDirection;
         }
         public void ApplyAction(ContextContainer context)
@@ -166,7 +168,7 @@ namespace Game.Interactables
                 clothing.SetCurrentClothingStage(_clothingChangerConfig.ResultStage, _clothingChangerConfig.ResultMesh);
                 
                 var clothingGameObject = clothing.gameObject;
-                clothingGameObject.transform.position = _clothingChangerConfig.DropPosition.position;
+                clothingGameObject.transform.position = _dropPosition.position;
                 clothingGameObject.SetActive(true);
                 
                 var dropForce = _dropDirection * _clothingChangerConfig.DropSpeed * 0.3f +
