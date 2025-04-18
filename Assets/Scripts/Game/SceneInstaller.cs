@@ -36,7 +36,7 @@ namespace Game
         private void InstallStateMachine()
         {
             Container.Bind<ILevelState>().To<UpgradeState>().AsSingle();
-            Container.Bind<ILevelState>().To<WorkState>().AsSingle();
+            Container.Bind<ILevelState>().To<DoWorkState>().AsSingle();
 
             Container.Bind<GameStateMachine.GameStateMachine>().FromNew().AsSingle();
             Container.Bind<CurrentGameStateObserver>().FromNew().AsSingle();

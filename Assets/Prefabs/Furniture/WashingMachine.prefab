@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
+  outlineMode: 1
   outlineColor: {r: 0.899371, g: 0.5873534, b: 0.14989509, a: 1}
   outlineWidth: 2.73
   precomputeOutline: 0
@@ -145,13 +145,13 @@ MonoBehaviour:
   aimHelpEnabled: 0
   _workMode: 0
   _particleOnComplete: {fileID: 6963968368831332842}
-  _clothingChangerSettings:
+  _progressBarView: {fileID: 1332347465645796123}
+  _clothingChangerConfig:
     _stageToApply: 0
     _resultStage: 1
-    _dropPosition: {fileID: 1249343221997804134}
-    _resultMesh: {fileID: 4300000, guid: e0d6665cb3ba4ab41834bb5bc8d5d5a7, type: 3}
-    _dropSpeed: 6
-  _progressBarView: {fileID: 1332347465645796123}
+    _resultMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+    _dropSpeed: 10
+  _dropPosition: {fileID: 1249343221997804134}
 --- !u!1 &1186709897417552824
 GameObject:
   m_ObjectHideFlags: 0

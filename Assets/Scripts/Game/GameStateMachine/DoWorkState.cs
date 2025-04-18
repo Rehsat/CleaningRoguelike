@@ -3,7 +3,7 @@ using UniRx;
 
 namespace Game.GameStateMachine
 {
-    public class WorkState : ILevelState
+    public class DoWorkState : ILevelState
     {
         private CompositeDisposable _compositeDisposable;
         private GameStateMachine _gameStateMachine;

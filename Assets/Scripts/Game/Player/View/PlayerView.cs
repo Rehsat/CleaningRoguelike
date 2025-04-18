@@ -11,6 +11,7 @@ namespace Game.Player
     [RequireComponent(typeof(CharacterController))]
     public class PlayerView : MonoBehaviour
     {
+        //TODO Сделать конфиг и инициализировать компоненты используя контекст
         [SerializeField] private float _speed;
         [SerializeField] private float lookSpeed = 2f;
         [SerializeField] private float _throwPowerCollectSpeed;
@@ -21,6 +22,7 @@ namespace Game.Player
         [SerializeField] private Transform _holdObjectPosition;
         [SerializeField] private HeadBob _headBob;
         [SerializeField] private PlayerInteractablesDetector _playerInteractablesDetector;
+        [SerializeField] private FurnitureBuilder _furnitureBuilder;
 
         private float verticalRotation = 0f;
         private float _speedMultiplier;

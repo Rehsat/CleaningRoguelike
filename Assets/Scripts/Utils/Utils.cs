@@ -49,4 +49,16 @@ public static class Utils
         }
         throw new ArgumentOutOfRangeException();
     }
+    public static void DoShowAnimation(this Transform transform, float secondsDuration = 0.3f)
+    {
+        transform.gameObject.SetActive(true);
+        transform.localScale = Vector3.zero;
+        transform.DOScale(1f, secondsDuration).SetEase(Ease.OutBack);
+    }
+    public static void DoHideAnimation(this Transform transform, float secondsDuration = 0.3f)
+    {
+        transform.DOScale(0, secondsDuration).SetEase(Ease.InBack)
+            .OnComplete((() => transform.gameObject.SetActive(false)));
+    }
+    
 }

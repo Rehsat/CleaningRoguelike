@@ -29,7 +29,7 @@ namespace Game.GameStateMachine
             _startQuotaButton.SetEnabled(true);
             _startQuotaButton.OnInteracted.SubscribeWithSkip((() =>
             {
-                _stateMachine.EnterState<WorkState>();
+                _stateMachine.EnterState<DoWorkState>();
             })).AddTo(_compositeDisposable);
         }
 

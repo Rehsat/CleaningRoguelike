@@ -1,4 +1,5 @@
 using System;
+using Game.GameStateMachine;
 using Game.Interactables;
 using Game.UI.Interactables;
 using UnityEngine;
@@ -44,22 +45,31 @@ namespace Game.Clothing
         public void SetConfig(ClothingChangerConfig config)
         {
             _clothingChangerConfig = config;
-            
         }
 
-        private void OnWorkEnabledStateChange(bool isWorkEnabled)
+        private void OnWorkEnabledStateChange(WorkState workState)
         {
-            _progressBarView.gameObject.SetActive(isWorkEnabled);
-            if (isWorkEnabled)
-            {
-                _particleOnComplete.gameObject.SetActive(false);
-            }
-            else
+            SetWorkProgressViewByState(workState);
+            
+            if (workState == WorkState.Completed)
             {
                 var particlePosition = _dropPosition.position;
                 _particleOnComplete.transform.position = particlePosition;
                 _particleOnComplete.gameObject.SetActive(true);
+                _progressBarView.gameObject.SetActive(false);
             }
+            else
+            {
+                _particleOnComplete.gameObject.SetActive(false);
+            }
+        }
+
+        private void SetWorkProgressViewByState(WorkState workState)
+        {
+            if (workState == WorkState.Started)
+                _progressBarView.transform.DoShowAnimation();
+            else
+                _progressBarView.transform.DoHideAnimation();
         }
 
         protected override bool CanBeInteracted(ContextContainer context, Interaction interactionType)

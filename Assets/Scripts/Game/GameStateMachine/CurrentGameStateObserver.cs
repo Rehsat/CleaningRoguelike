@@ -16,7 +16,7 @@ public class CurrentGameStateObserver
         var gameStateByType = new Dictionary<Type, GameState>()
         {
             {typeof(UpgradeState), GameState.Upgrade},
-            {typeof(WorkState), GameState.Work}
+            {typeof(DoWorkState), GameState.Work}
         };
         
         gameStateMachine.OnStateChange.SubscribeWithSkip(currentState =>

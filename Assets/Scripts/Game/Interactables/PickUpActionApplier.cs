@@ -30,7 +30,7 @@ namespace Game.Interactables
     {
         private readonly TAction _action;
 
-        private ReactiveEvent<bool> _onWorkStateChanged;
+        private ReactiveEvent<WorkState> _onWorkStateChanged;
         private ReactiveProperty<float> _currentSecondsPassed;
         private ReactiveProperty<float> _secondsToComplete;
         private CompositeDisposable _compositeDisposable;
@@ -38,11 +38,11 @@ namespace Game.Interactables
 
         public IReadOnlyReactiveProperty<float> CurrentProgress => _currentSecondsPassed;
         public IReadOnlyReactiveProperty<float> GoalProgress => _secondsToComplete;
-        public IReadOnlyReactiveEvent<bool> OnWorkStateChanged => _onWorkStateChanged;
+        public IReadOnlyReactiveEvent<WorkState> OnWorkStateChanged => _onWorkStateChanged;
         public TimedAction(TAction action, float secondsToComplete)
         {
             _action = action;
-            _onWorkStateChanged = new ReactiveEvent<bool>();
+            _onWorkStateChanged = new ReactiveEvent<WorkState>();
             _currentSecondsPassed = new ReactiveProperty<float>(0);
             _secondsToComplete =  new ReactiveProperty<float>(secondsToComplete);
         }
@@ -59,7 +59,7 @@ namespace Game.Interactables
                 if(_currentSecondsPassed.Value >= _secondsToComplete.Value) CompleteAction(context);
             })).AddTo(_compositeDisposable);
             
-            _onWorkStateChanged.Notify(true);
+            _onWorkStateChanged.Notify(WorkState.Started);
         }
 
         private void CompleteAction(ContextContainer context)
@@ -69,7 +69,7 @@ namespace Game.Interactables
             _currentSecondsPassed.Value = 0;
             _action.ApplyAction(context); 
             
-            _onWorkStateChanged.Notify(false);
+            _onWorkStateChanged.Notify(WorkState.Completed);
         }
 
     }
@@ -85,8 +85,8 @@ namespace Game.Interactables
         private ReactiveProperty<float> _currentPresses;
         private ReactiveProperty<float> _pressesToComplete;
         private ReactiveProperty<bool> _isPressingEnabled;
-        private ReactiveEvent<bool> _onWorkCompleteStateChange;
-        public IReadOnlyReactiveEvent<bool> OnWorkStateChanged => _onWorkCompleteStateChange;
+        private ReactiveEvent<WorkState> _onWorkStateChange;
+        public IReadOnlyReactiveEvent<WorkState> OnWorkStateChanged => _onWorkStateChange;
 
         public IReadOnlyReactiveProperty<float> CurrentProgress => _currentPresses;
         public IReadOnlyReactiveProperty<float> GoalProgress => _pressesToComplete;
@@ -94,7 +94,7 @@ namespace Game.Interactables
         {
             _actionOnComplete = actionOnComplete;
             _isPressingEnabled= new ReactiveProperty<bool>();
-            _onWorkCompleteStateChange =new ReactiveEvent<bool>();
+            _onWorkStateChange =new ReactiveEvent<WorkState>();
             _currentPresses = new ReactiveProperty<float>();  
             _pressesToComplete = new ReactiveProperty<float>(pressesToComplete);
             
@@ -102,7 +102,6 @@ namespace Game.Interactables
             {
                 if(isEnabled)
                 {
-                    _onWorkCompleteStateChange.Notify(true);
                     _compositeDisposable = new CompositeDisposable();
                     var time = 0.25f;
                     _currentSequence = Utils.GetWorkTween(_currentInteractableView.transform, time, Ease.Unset);
@@ -113,6 +112,7 @@ namespace Game.Interactables
                         _currentPresses.Value++;
                         if (_currentPresses.Value >= _pressesToComplete.Value) Complete();
                     }).AddTo(_compositeDisposable);
+                    _onWorkStateChange.Notify(WorkState.Started);
                 }
                 else
                 {
@@ -126,6 +126,7 @@ namespace Game.Interactables
         {
             _compositeDisposable?.Dispose();
             _currentSequence?.Kill();
+            _onWorkStateChange.Notify(WorkState.Stopped);
         }
 
         private void Complete()
@@ -133,7 +134,7 @@ namespace Game.Interactables
             _isPressingEnabled.Value = false;
             _currentPresses.Value = 0;
             _actionOnComplete.ApplyAction(new ContextContainer());
-            _onWorkCompleteStateChange.Notify(false);
+            _onWorkStateChange.Notify(WorkState.Completed);
         }
         public void ApplyAction(ContextContainer context)
         {
@@ -205,5 +206,12 @@ namespace Game.Interactables
                 sellableContext.ChangeCostBy(_changeValue);
             }
         }
+    }
+
+    public enum WorkState
+    {
+        Stopped = 0,
+        Started = 1,
+        Completed = 2
     }
 }

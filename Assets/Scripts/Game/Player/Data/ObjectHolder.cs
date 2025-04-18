@@ -52,5 +52,12 @@ namespace Game.Player.Data
             _currentPickedUpObject.Value = null;
             _currentThrowPower.Value = 0;
         }
+
+        public void ForceRemoveCurrentObject()
+        {
+            var currentObject = _currentPickedUpObject.Value;
+            _currentPickedUpObject.Value = null;
+            Object.Destroy(currentObject);
+        }
     }
 }
