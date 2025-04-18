@@ -6,6 +6,7 @@ using UnityEngine;
 
 public static class Utils
 {
+    //TODO ОТСОРТИРОВАТЬ ПО РАЗНЫМ ФАЙЛАМ
     public static Sequence GetWorkTween(Transform transform, float durationSeconds = 1f, Ease ease = Ease.OutBack)
     {
         var startScale = transform.localScale;
@@ -49,16 +50,27 @@ public static class Utils
         }
         throw new ArgumentOutOfRangeException();
     }
-    public static void DoShowAnimation(this Transform transform, float secondsDuration = 0.3f)
+    public static void DoShowAnimation(this Transform transform, float secondsDuration = 0.3f, bool withOriginalScale = false)
     {
         transform.gameObject.SetActive(true);
+        var originalScale = transform.localScale;
         transform.localScale = Vector3.zero;
-        transform.DOScale(1f, secondsDuration).SetEase(Ease.OutBack);
+        if (withOriginalScale)
+            transform.DOScale(originalScale, secondsDuration).SetEase(Ease.OutBack);
+        else
+            transform.DOScale(1f, secondsDuration).SetEase(Ease.OutBack);
     }
     public static void DoHideAnimation(this Transform transform, float secondsDuration = 0.3f)
     {
         transform.DOScale(0, secondsDuration).SetEase(Ease.InBack)
             .OnComplete((() => transform.gameObject.SetActive(false)));
+    }
+    public static Vector3 SnapToGrid(this Vector3 vector3, float gridSize = 1.0f)
+    {
+        return new Vector3(
+            Mathf.Round(vector3.x / gridSize) * gridSize,
+            Mathf.Round(vector3.y / gridSize) * gridSize,
+            Mathf.Round(vector3.z / gridSize) * gridSize);
     }
     
 }

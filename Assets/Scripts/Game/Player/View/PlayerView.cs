@@ -49,6 +49,7 @@ namespace Game.Player
                 _speedMultiplier = isRunning ? 2 : 1;
             });
             InitObjectHolder(objectHolder);
+            _furnitureBuilder.Construct(objectHolder, playerInput);
         }
 
         private void InitObjectHolder(ObjectHolder objectHolder)
