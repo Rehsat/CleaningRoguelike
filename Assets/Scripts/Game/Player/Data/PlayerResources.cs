@@ -46,7 +46,10 @@ public class ResourceData
     public void ChangeValueBy(float value)
     {
         if (_currentValue.Value + value > _maxValue.Value)
+        {
             _currentValue.Value = _maxValue.Value;
+            return;
+        }
         _currentValue.Value += value;
     }
 
