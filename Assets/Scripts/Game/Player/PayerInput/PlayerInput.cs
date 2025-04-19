@@ -9,12 +9,14 @@ namespace Game.Player.PayerInput
         private Input _input;
         
         private readonly ReactiveEvent<Vector2> _onLookPerformed;
+        private readonly ReactiveEvent<Vector2> _onBuildingRotatePerformed;
         private readonly ReactiveEvent<bool> _onRunningStateChange;
         private readonly ReactiveEvent<bool> _onInteractButtonPressStateChange;
         private readonly ReactiveEvent<bool> _onThrowButtonPressStateChange;
         private readonly ReactiveTrigger _onUpgradesOpenButtonPressed;
 
         public IReadOnlyReactiveEvent<Vector2> OnLookPerformed => _onLookPerformed;
+        public ReactiveEvent<Vector2> OnBuildingRotatePerformed => _onBuildingRotatePerformed;
         public IReadOnlyReactiveEvent<bool> OnRunningStateChange => _onRunningStateChange;
         public IReadOnlyReactiveEvent<bool> OnInteractButtonPressed => _onInteractButtonPressStateChange;
         public IReadOnlyReactiveEvent<bool> OnThrowButtonPressStateChange => _onThrowButtonPressStateChange;
@@ -23,25 +25,29 @@ namespace Game.Player.PayerInput
         public PlayerInput()
         {
             _input = new Input();
+            _onUpgradesOpenButtonPressed = new ReactiveTrigger();
+            
             _onLookPerformed = new ReactiveEvent<Vector2>();
+            _onBuildingRotatePerformed = new ReactiveEvent<Vector2>();
+            
             _onRunningStateChange = new ReactiveEvent<bool>();
             _onInteractButtonPressStateChange = new ReactiveEvent<bool>();
             _onThrowButtonPressStateChange = new ReactiveEvent<bool>();
-            _onUpgradesOpenButtonPressed = new ReactiveTrigger();
 
+            //только сейчас дошло, что можно быыло метод выделить под инит таких вот действий, но уже поздняк, если понадобится - сделаю
             _input.InputMap.Interact.performed += ctx => _onInteractButtonPressStateChange.Notify(true);
             _input.InputMap.Interact.canceled += ctx => _onInteractButtonPressStateChange.Notify(false);
             
             _input.InputMap.Sprint.performed += ctx => _onRunningStateChange.Notify(true);
             _input.InputMap.Sprint.canceled += ctx => _onRunningStateChange.Notify(false);
-            
-            _input.InputMap.Look.performed += ctx => 
-                _onLookPerformed.Notify(_input.InputMap.Look.ReadValue<Vector2>());
 
             _input.InputMap.Throw.started += ctx =>_onThrowButtonPressStateChange.Notify(true);
             _input.InputMap.Throw.canceled += ctx => _onThrowButtonPressStateChange.Notify(false);
 
             _input.InputMap.ShowUpgrades.performed += ctx => _onUpgradesOpenButtonPressed.Notify();
+            
+            _input.InputMap.BuildRotate.performed += ctx => 
+                _onBuildingRotatePerformed.Notify(_input.InputMap.BuildRotate.ReadValue<Vector2>());
             
             _input.Enable();
         }

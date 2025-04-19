@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using DG.Tweening;
 using Game.Player.Data;
 using Game.Player.PayerInput;
 using UniRx;
+using UnityEditor;
 using UnityEngine;
 
 public class FurnitureBuilder : MonoBehaviour
 {
     //TODO: сделать настройки в конструкторе
     [Header("Settings")]
-    [SerializeField] private float _placementOffset = 1.5f;
     [SerializeField] private float _maxPlacementDistance = 5f;
     [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private Material _previewMaterial;
+    [SerializeField] private LayerMask _obstructionMask;
+    [SerializeField] private Material _validMaterial;
+    [SerializeField] private Material _invalidMaterial;
     [SerializeField] private ParticleSystem _buildParticle;
 
     private ObjectHolder _objectHolder;
@@ -21,8 +25,8 @@ public class FurnitureBuilder : MonoBehaviour
     private Coroutine _placementCoroutine;
     private FurnitureContainerBox _currentBox;
     private CompositeDisposable _holdableItemDisposable;
-    
-    private bool IsBuildingAvailable => _currentPreview != null;
+    private Sequence _rotateSequence;
+    private bool IsBuildingAvailable => _currentPreview != null && CheckCollisions();
 
     public void Construct(ObjectHolder holder, PlayerInput playerInput)
     {
@@ -36,6 +40,7 @@ public class FurnitureBuilder : MonoBehaviour
             {
                 if (isPressed) HandlePlacementInput();
             }));
+        _playerInput.OnBuildingRotatePerformed.SubscribeWithSkip(RotateConstructionPreview);
         
         _objectHolder.CurrentPickedUpObject
             .Subscribe(HandleNewHoldableObject)
@@ -55,22 +60,37 @@ public class FurnitureBuilder : MonoBehaviour
     }
     private void UpdateConstructionPreview(Rigidbody newObject)
     {
-
         _currentBox = newObject.GetComponent<FurnitureContainerBox>();
         if (_currentBox?.BuildableObjectPrefab == null) return;
 
         CreatePreviewObject();
         StartPlacementTracking();
     }
+    private void RotateConstructionPreview(Vector2 rotationDirection)
+    {
+        if(_currentPreview == null) return;
+        _rotateSequence?.Kill();
+        _rotateSequence = DOTween.Sequence();
+        
+        var rotationStep = 90;
+        var animationSpeed = 0.3f;
+        var newRotation = _currentPreview.transform.eulerAngles + (Vector3)rotationDirection * rotationStep;
+        var tween = _currentPreview.transform
+            .DORotate(newRotation, animationSpeed)
+            .SetEase(Ease.OutBack);
+
+        _rotateSequence.Append(tween)
+            .OnKill((() => _currentPreview.transform.eulerAngles = newRotation));
+        _rotateSequence.Play();
+    }
 
     private void CreatePreviewObject()
     {
         _currentPreview = Instantiate(_currentBox.BuildableObjectPrefab);
-        SetPreviewMaterial(_currentPreview);
         ToggleColliders(_currentPreview, false);
     }
 
-    private void SetPreviewMaterial(GameObject obj)
+    private void SetPreviewMaterial(GameObject obj, Material material)
     {
         var renderers = obj.GetComponentsInChildren<Renderer>();
         foreach (var r in renderers)
@@ -78,7 +98,7 @@ public class FurnitureBuilder : MonoBehaviour
             var materials = r.materials;
             for (int i = 0; i < materials.Length; i++)
             {
-                materials[i] = _previewMaterial;
+                materials[i] =  material;
             }
             r.materials = materials;
         }
@@ -92,9 +112,16 @@ public class FurnitureBuilder : MonoBehaviour
 
     private IEnumerator TrackPlacementPosition()
     {
-        while (IsBuildingAvailable)
+        while (_currentPreview != null)
         {
             UpdatePreviewPosition();
+            var isBuildAvailable = IsBuildingAvailable;
+            Debug.LogError(isBuildAvailable);
+            var material = isBuildAvailable ? _validMaterial : _invalidMaterial;
+            SetPreviewMaterial(_currentPreview, material);
+            yield return null;
+            yield return null;
+            yield return null;
             yield return null;
         }
     }
@@ -106,12 +133,10 @@ public class FurnitureBuilder : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, _maxPlacementDistance, _groundMask))
         {
             _currentPreview.transform.position = (hit.point + hit.normal * 0.05f); 
-            _currentPreview.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
         }
         else
         {
             _currentPreview.transform.position = ray.GetPoint(_maxPlacementDistance);
-            _currentPreview.transform.rotation = Quaternion.identity;
         }
 
         _currentPreview.transform.position = _currentPreview.transform.position.SnapToGrid();
@@ -119,7 +144,6 @@ public class FurnitureBuilder : MonoBehaviour
 
     private void HandlePlacementInput()
     {
-        Debug.LogError(123);
         if (IsBuildingAvailable)
         {
             PlaceObject();
@@ -129,6 +153,7 @@ public class FurnitureBuilder : MonoBehaviour
 
     private void PlaceObject()
     {
+        _rotateSequence?.Kill();
         var buildPosition = _currentPreview.transform.position;
         var finalObject = Instantiate(
             _currentBox.BuildableObjectPrefab,
@@ -141,7 +166,7 @@ public class FurnitureBuilder : MonoBehaviour
             buildPosition.z);
         _buildParticle.Play();
         
-        finalObject.transform.DoShowAnimation(withOriginalScale: true);
+        finalObject.transform.DoShowAnimation(0.5f,true);
         ToggleColliders(finalObject, true);
         ClearPreview();
     }
@@ -152,6 +177,19 @@ public class FurnitureBuilder : MonoBehaviour
         {
             collider.enabled = state;
         }
+    }
+    private bool CheckCollisions()
+    {
+        if (_currentPreview == null) return false;
+
+        var collisions = Physics.OverlapBox(
+            _currentPreview.transform.position,
+            _currentPreview.transform.localScale/2, 
+            _currentPreview.transform.rotation,
+            _obstructionMask
+        ).Where(c => !c.transform.IsChildOf(_currentPreview.transform)).ToArray();
+        
+        return collisions.Length == 0;
     }
 
     private void ClearPreview()
@@ -171,4 +209,5 @@ public class FurnitureBuilder : MonoBehaviour
             _placementCoroutine = null;
         }
     }
+    
 }

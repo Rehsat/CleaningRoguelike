@@ -65,7 +65,7 @@ public static class Utils
         transform.DOScale(0, secondsDuration).SetEase(Ease.InBack)
             .OnComplete((() => transform.gameObject.SetActive(false)));
     }
-    public static Vector3 SnapToGrid(this Vector3 vector3, float gridSize = 1.0f)
+    public static Vector3 SnapToGrid(this Vector3 vector3, float gridSize = 0.5f)
     {
         return new Vector3(
             Mathf.Round(vector3.x / gridSize) * gridSize,

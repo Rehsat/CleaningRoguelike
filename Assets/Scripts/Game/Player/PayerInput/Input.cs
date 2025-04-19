@@ -80,6 +80,15 @@ public partial class @Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BuildRotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""4b5e6ce4-b71b-494e-9264-f81f5f5eb68d"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -192,6 +201,39 @@ public partial class @Input: IInputActionCollection2, IDisposable
                     ""action"": ""ShowUpgrades"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""e32ccadf-fb02-4ceb-b1af-a3d9d11270ea"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildRotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""e63a4169-819e-47ed-8d65-d6ec6392265d"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""d7ffd1fe-2130-45cf-9358-fa6f2e71b2be"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildRotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -206,6 +248,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
         m_InputMap_Interact = m_InputMap.FindAction("Interact", throwIfNotFound: true);
         m_InputMap_Throw = m_InputMap.FindAction("Throw", throwIfNotFound: true);
         m_InputMap_ShowUpgrades = m_InputMap.FindAction("ShowUpgrades", throwIfNotFound: true);
+        m_InputMap_BuildRotate = m_InputMap.FindAction("BuildRotate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -273,6 +316,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_InputMap_Interact;
     private readonly InputAction m_InputMap_Throw;
     private readonly InputAction m_InputMap_ShowUpgrades;
+    private readonly InputAction m_InputMap_BuildRotate;
     public struct InputMapActions
     {
         private @Input m_Wrapper;
@@ -283,6 +327,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_InputMap_Interact;
         public InputAction @Throw => m_Wrapper.m_InputMap_Throw;
         public InputAction @ShowUpgrades => m_Wrapper.m_InputMap_ShowUpgrades;
+        public InputAction @BuildRotate => m_Wrapper.m_InputMap_BuildRotate;
         public InputActionMap Get() { return m_Wrapper.m_InputMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -310,6 +355,9 @@ public partial class @Input: IInputActionCollection2, IDisposable
             @ShowUpgrades.started += instance.OnShowUpgrades;
             @ShowUpgrades.performed += instance.OnShowUpgrades;
             @ShowUpgrades.canceled += instance.OnShowUpgrades;
+            @BuildRotate.started += instance.OnBuildRotate;
+            @BuildRotate.performed += instance.OnBuildRotate;
+            @BuildRotate.canceled += instance.OnBuildRotate;
         }
 
         private void UnregisterCallbacks(IInputMapActions instance)
@@ -332,6 +380,9 @@ public partial class @Input: IInputActionCollection2, IDisposable
             @ShowUpgrades.started -= instance.OnShowUpgrades;
             @ShowUpgrades.performed -= instance.OnShowUpgrades;
             @ShowUpgrades.canceled -= instance.OnShowUpgrades;
+            @BuildRotate.started -= instance.OnBuildRotate;
+            @BuildRotate.performed -= instance.OnBuildRotate;
+            @BuildRotate.canceled -= instance.OnBuildRotate;
         }
 
         public void RemoveCallbacks(IInputMapActions instance)
@@ -357,5 +408,6 @@ public partial class @Input: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
         void OnShowUpgrades(InputAction.CallbackContext context);
+        void OnBuildRotate(InputAction.CallbackContext context);
     }
 }
