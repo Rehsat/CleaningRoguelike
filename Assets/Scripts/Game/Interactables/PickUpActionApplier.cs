@@ -10,6 +10,21 @@ using UnityEngine;
 namespace Game.Interactables
 {
     //принял решение хранить все Action в одном фале потому что пока так удобнее. Если будут проблемы - без проблем разделю на несколько
+    
+    public class DoSimpleAction : IAction
+    {
+        private readonly Action _action;
+
+        public DoSimpleAction(Action action)
+        {
+            _action = action;
+        }
+        public void ApplyAction(ContextContainer context)
+        {
+            _action.Invoke();
+        }
+    }
+    
     public class PickUpAction : IAction
     {
         public void ApplyAction(ContextContainer contextContainer)
@@ -26,9 +41,9 @@ namespace Game.Interactables
         }
     }
 
-    public class TimedAction<TAction> : IProgressModelContainer, IWorkAction where TAction : IAction
+    public class TimedAction: IProgressModelContainer, IWorkAction //where TAction : IAction
     {
-        private readonly TAction _action;
+        private readonly IAction _action;
 
         private ReactiveEvent<WorkState> _onWorkStateChanged;
         private ReactiveProperty<float> _currentSecondsPassed;
@@ -39,7 +54,7 @@ namespace Game.Interactables
         public IReadOnlyReactiveProperty<float> CurrentProgress => _currentSecondsPassed;
         public IReadOnlyReactiveProperty<float> GoalProgress => _secondsToComplete;
         public IReadOnlyReactiveEvent<WorkState> OnWorkStateChanged => _onWorkStateChanged;
-        public TimedAction(TAction action, float secondsToComplete)
+        public TimedAction(IAction action, float secondsToComplete)
         {
             _action = action;
             _onWorkStateChanged = new ReactiveEvent<WorkState>();
@@ -50,6 +65,7 @@ namespace Game.Interactables
         public void ApplyAction(ContextContainer context)
         {
             _compositeDisposable = new CompositeDisposable();
+            _currentSecondsPassed.Value = 0;
             _sequence = context.TryGetContext<InteractedObjectContext>(out var interactedObject)
                 ? Utils.GetWorkTween(interactedObject.InteractableView.transform)
                 : null;
@@ -66,7 +82,6 @@ namespace Game.Interactables
         {
             _sequence?.Kill();
             _compositeDisposable.Dispose();
-            _currentSecondsPassed.Value = 0;
             _action.ApplyAction(context); 
             
             _onWorkStateChanged.Notify(WorkState.Completed);

@@ -15,14 +15,6 @@ namespace Game.Player.Data
         {
             _currentPickedUpObject = new ReactiveProperty<Rigidbody>();
             _currentThrowPower = new ReactiveProperty<float>();
-            _currentPickedUpObject.Subscribe((rigidbody =>
-            {
-                if (rigidbody != null)
-                    Debug.LogError(rigidbody.gameObject);
-                else
-                    Debug.LogError(null);
-                
-            }));
         }
 
         public bool TryPickUpObject(Rigidbody pickUp)

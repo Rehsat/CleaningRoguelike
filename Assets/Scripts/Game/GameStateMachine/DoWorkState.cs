@@ -1,12 +1,28 @@
 ﻿using System;
+using Game.Interactables;
+using Game.Quota;
+using Game.UI.Interactables;
 using UniRx;
 
 namespace Game.GameStateMachine
 {
     public class DoWorkState : ILevelState
     {
+        private readonly QuotaCostManager _quotaCostManager;
         private CompositeDisposable _compositeDisposable;
         private GameStateMachine _gameStateMachine;
+        private TimedAction _quotaTimerAction;
+
+        public DoWorkState(SceneObjectsContainer sceneObjectsContainer, QuotaCostManager quotaCostManager)
+        {
+            _quotaCostManager = quotaCostManager;
+            var onTimerCompleteAction = new DoSimpleAction(OnQuotaTimerComplete);
+            var quotaTimeProgressBar = sceneObjectsContainer.GetObjectsComponent<ProgressBarView>(SceneObject.QuotaTimeProgressBar);
+            _quotaTimerAction = new TimedAction(onTimerCompleteAction, 35);
+            
+            var quotaTimerProgressPresenter = new ProgressPresenter(_quotaTimerAction, quotaTimeProgressBar);
+            
+        }
         public void SetStateMachine(GameStateMachine stateMachine)
         {
             _gameStateMachine = stateMachine;
@@ -15,10 +31,7 @@ namespace Game.GameStateMachine
         {
             _compositeDisposable?.Dispose();
             _compositeDisposable = new CompositeDisposable();
-            Observable.Timer(TimeSpan.FromSeconds(5)).Subscribe((l =>
-            {
-                _gameStateMachine.EnterState<UpgradeState>();
-            })).AddTo(_compositeDisposable);
+            _quotaTimerAction.ApplyAction(new ContextContainer());
         }
 
         public void Exit()
@@ -26,8 +39,12 @@ namespace Game.GameStateMachine
             _compositeDisposable?.Dispose();
         }
 
-        public void OnUpdate()
+        public void OnUpdate(){}
+
+        private void OnQuotaTimerComplete()
         {
+            _gameStateMachine.EnterState<UpgradeState>();
+            _quotaCostManager.ChangeQuotaIterationBy(1);
         }
     }
 }

@@ -49,7 +49,6 @@ public class FurnitureBuilder : MonoBehaviour
 
     private void HandleNewHoldableObject(Rigidbody newObject)
     {
-        Debug.LogError(321);
         Observable.TimerFrame(1).Subscribe((l =>
         {
             ClearPreview();
@@ -116,7 +115,6 @@ public class FurnitureBuilder : MonoBehaviour
         {
             UpdatePreviewPosition();
             var isBuildAvailable = IsBuildingAvailable;
-            Debug.LogError(isBuildAvailable);
             var material = isBuildAvailable ? _validMaterial : _invalidMaterial;
             SetPreviewMaterial(_currentPreview, material);
             yield return null;

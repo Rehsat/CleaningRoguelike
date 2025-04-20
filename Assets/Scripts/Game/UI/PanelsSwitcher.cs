@@ -1,44 +1,58 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using RotaryHeart.Lib.SerializableDictionaryPro;
 using UnityEngine;
 
-public class PanelsSwitcher : MonoBehaviour
+namespace Game.UI
 {
-    [SerializeField] private Direction _hideDirection;
-    [SerializeField] private SerializableDictionary<Panel, RectTransform> _panels;
-    private RectTransform _currentPanel;
-    private Vector3 _hideDirectionVector => _hideDirection.ToVector();
-    private const float DOWN_VALUE = 650; 
-    public void Awake()
+    public class PanelsSwitcher : MonoBehaviour, IGameStateChangeView
     {
-        foreach (var rectTransform in _panels.Values)
+        //TODO добавить дженерик для энама
+        [SerializeField] private Direction _hideDirection;
+        [SerializeField] private SerializableDictionary<GameState, RectTransform> _panels;
+        private RectTransform _currentPanel;
+        private Vector3 _hideMovement => _hideDirection.ToVector() * DOWN_VALUE;
+        private const float DOWN_VALUE = 650; 
+        public void Awake()
         {
-            rectTransform.transform.position += Vector3.down * DOWN_VALUE;
+            foreach (var rectTransform in _panels.Values)
+            {
+                rectTransform.transform.localPosition += _hideMovement;
+            }
         }
-    }
 
-    public void OpenPanel(Panel panelType)
-    {
-        Debug.LogError(panelType);
-        var movement = _hideDirectionVector * DOWN_VALUE;
-        var sequence = DOTween.Sequence();
-        if (_currentPanel != null)
+        public void OpenPanel(GameState panelType)
         {
-            var hideTween = _currentPanel.DOMove(_currentPanel.transform.position - movement, 0.5f);
-            sequence.Append(hideTween);
+            var sequence = DOTween.Sequence();
+            if (_currentPanel != null)
+            {
+                var currentPanel = _currentPanel;
+                var hideTween = _currentPanel
+                    .DOLocalMove(_currentPanel.transform.localPosition + _hideMovement, 0.5f)
+                    .SetEase(Ease.InBack)
+                    .OnComplete(() => currentPanel.gameObject.SetActive(false));
+                
+                sequence
+                    .Append(hideTween);
+                _currentPanel = null;
+            }
+            if (_panels.ContainsKey(panelType))
+            {
+                var panel = _panels[panelType];
+                _currentPanel = panel;
+                var showPosition = panel.transform.localPosition - _hideMovement;
+                Debug.LogError(showPosition);
+                _currentPanel.gameObject.SetActive(true);
+                var showTween = panel
+                    .DOLocalMove(showPosition, 0.5f)
+                    .SetEase(Ease.OutBack);
+                sequence.Append(showTween);
+            }
+            sequence.Play();
         }
-        var panel = _panels[panelType];
-        _currentPanel = panel;
-        var showTween = panel.DOMove(panel.transform.position + movement, 0.5f).SetEase(Ease.OutBack);
-        sequence.Append(showTween);
-        sequence.Play();
+
+        public void OnGameStateChanged(GameState currentState)
+        {
+            OpenPanel(currentState);
+        }
     }
-}
-public enum Panel
-{
-    None = 0,
-    Gold = 1,
-    Genie = 2
 }

@@ -45,17 +45,27 @@ public class ResourceData
 
     public void ChangeValueBy(float value)
     {
-        if (_currentValue.Value + value > _maxValue.Value)
+        SetCurrentValue(_currentValue.Value + value);
+    }
+
+    public void SetCurrentValue(float value)
+    {
+        if (value > _maxValue.Value)
         {
             _currentValue.Value = _maxValue.Value;
             return;
         }
-        _currentValue.Value += value;
+        _currentValue.Value = value;
     }
 
     public void ChangeMaxValueBy(float value)
     {
         _maxValue.Value += value;
+    }
+
+    public void SetMaxValue(float value)
+    {
+        _maxValue.Value = value;
     }
 }
 public enum Resource

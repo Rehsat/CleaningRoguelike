@@ -72,5 +72,11 @@ public static class Utils
             Mathf.Round(vector3.y / gridSize) * gridSize,
             Mathf.Round(vector3.z / gridSize) * gridSize);
     }
+
+    public static float RoundToValue(this float valueToRound, int value = 10)
+    {
+        int divisionResult = (int)valueToRound / value;
+        return divisionResult * value;
+    }
     
 }

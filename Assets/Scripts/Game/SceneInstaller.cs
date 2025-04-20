@@ -3,6 +3,7 @@ using Game.GameStateMachine;
 using Game.Interactables.Factories;
 using Game.Player.Data;
 using Game.Player.PayerInput;
+using Game.Quota;
 using UnityEngine;
 using Zenject;
 
@@ -24,7 +25,7 @@ namespace Game
             Container.Bind<PlayerResources>().FromNew().AsSingle();
             
             Container.Bind<ObjectSeller>().FromNew().AsSingle();
-            
+            Container.Bind<QuotaCostManager>().FromNew().AsSingle();
             InstallStateMachine();
         }
 

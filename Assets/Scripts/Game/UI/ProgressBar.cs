@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
+//TODO УБРАТЬ ПОВТОР
 public class ProgressBar : MonoBehaviour
 {
     [SerializeField] private Image _image;
