@@ -1,9 +1,9 @@
 using RotaryHeart.Lib.SerializableDictionaryPro;
 using UnityEngine;
 
-namespace Game
+namespace Gasme.Configs
 {
-    [CreateAssetMenu(menuName = "GameData/PrefabsContainer", fileName = "PrefabsContainer")]
+    [CreateAssetMenu(menuName = "GameConfigs/PrefabsContainer", fileName = "PrefabsContainer")]
     public class PrefabsContainer : ScriptableObject
     {
         [SerializeField] private SerializableDictionary<Prefab, GameObject> _prefabs;

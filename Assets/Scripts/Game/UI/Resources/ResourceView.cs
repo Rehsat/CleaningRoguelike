@@ -1,22 +1,19 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Game.UI.Resources
 {
-    public class ResourceView : MonoBehaviour
+    public class ResourceView : MonoBehaviour, IResourceView
     {
         [SerializeField] private TMP_Text _resourceCountText;
+        [SerializeField] private Image _icon; 
         
-        [Inject]
-        public void Construct()
+        public void SetIcon(Sprite icon)
         {
-            
-        }
-
-        public void SetIcon()
-        {
-            
+            if (_icon != null)
+                _icon.sprite = icon;
         }
         public void UpdateResourceValue(float value, float maxValue)
         {

@@ -1,5 +1,7 @@
+using Game.Configs;
 using Game.Interactables;
 using Game.Interactables.Contexts;
+using Gasme.Configs;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;

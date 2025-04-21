@@ -1,9 +1,11 @@
 using Game.Clothing;
+using Game.Configs;
 using Game.GameStateMachine;
 using Game.Interactables.Factories;
 using Game.Player.Data;
 using Game.Player.PayerInput;
 using Game.Quota;
+using Gasme.Configs;
 using UnityEngine;
 using Zenject;
 
@@ -11,11 +13,12 @@ namespace Game
 {
     public class SceneInstaller : MonoInstaller
     {
-        [SerializeField] private PrefabsContainer _prefabsContainer;
+        [SerializeField] private GameGlobalConfig _globalConfig;
         [SerializeField] private SceneObjectsContainer _sceneObjects;
         public override void InstallBindings()
         {
-            Container.BindInstance(_prefabsContainer).AsSingle();
+            InstallConfigs(_globalConfig);
+            
             Container.BindInstance(_sceneObjects).AsSingle();
             
             InstallFactories();
@@ -29,9 +32,14 @@ namespace Game
             InstallStateMachine();
         }
 
+        private void InstallConfigs(GameGlobalConfig globalConfig)
+        {
+            Container.BindInstance(globalConfig.PrefabsContainer).AsSingle();
+            Container.BindInstance(globalConfig.ResourceConfigsList).AsSingle();
+        }
         private void InstallFactories()
         {
-            var washingMachinePrefab = _prefabsContainer.GetPrefabsComponent<WashingMachine>(Prefab.WashingMachine);
+            var washingMachinePrefab = _globalConfig.PrefabsContainer.GetPrefabsComponent<WashingMachine>(Prefab.WashingMachine);
             Container.BindInstance(new WashingMachineFactory(washingMachinePrefab)).AsSingle();
         }
         private void InstallStateMachine()
@@ -42,5 +50,6 @@ namespace Game
             Container.Bind<GameStateMachine.GameStateMachine>().FromNew().AsSingle();
             Container.Bind<CurrentGameStateObserver>().FromNew().AsSingle();
         }
+
     }
 }
