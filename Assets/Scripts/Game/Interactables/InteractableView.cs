@@ -61,8 +61,9 @@ namespace Game.Interactables
         }
         public void SetIsSelectedState(bool isSelected)
         {
-            isSelected = isSelected && _actions[Interaction.InteractButton].Count > 0;
             _outline.OutlineColor = isSelected ? Color.white : _unselectedColor;
+            _outline.OutlineColor =
+                _actions[Interaction.InteractButton].Count > 0 ? _outline.OutlineColor : Color.green
             _outline.OutlineWidth = isSelected ? _startOutlineWidth * 3 : _startOutlineWidth;
         }
 
