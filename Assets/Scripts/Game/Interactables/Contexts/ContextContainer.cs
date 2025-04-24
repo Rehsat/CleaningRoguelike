@@ -9,16 +9,16 @@ namespace Game.Interactables
 {
     public class ContextContainer : IContextContainer
     {
-        private Dictionary<Type, IInteractableContext> _contexts;
-        private ReactiveEvent<IInteractableContext> _onNewContextAdded;
-        public IReadOnlyReactiveEvent<IInteractableContext> OnNewContextAdded => _onNewContextAdded;
+        private Dictionary<Type, IContext> _contexts;
+        private ReactiveEvent<IContext> _onNewContextAdded;
+        public IReadOnlyReactiveEvent<IContext> OnNewContextAdded => _onNewContextAdded;
         public ContextContainer()
         {
-            _contexts = new Dictionary<Type, IInteractableContext>();
-            _onNewContextAdded = new ReactiveEvent<IInteractableContext>();
+            _contexts = new Dictionary<Type, IContext>();
+            _onNewContextAdded = new ReactiveEvent<IContext>();
         }
 
-        public ContextContainer AddContext<TContext>(TContext context) where TContext : IInteractableContext
+        public ContextContainer AddContext<TContext>(TContext context) where TContext : IContext
         {
             var typeOfContext = context.GetType();
             if (_contexts.ContainsKey(typeOfContext))
@@ -41,12 +41,12 @@ namespace Game.Interactables
             return this;
         }
 
-        public List<IInteractableContext> GetAllContexts()
+        public List<IContext> GetAllContexts()
         {
             return _contexts.Values.ToList();
         }
 
-        public bool TryGetContext<TContext>(out TContext context) where TContext : IInteractableContext
+        public bool TryGetContext<TContext>(out TContext context) where TContext : IContext
         {
             if (_contexts.ContainsKey(typeof(TContext)))
             {

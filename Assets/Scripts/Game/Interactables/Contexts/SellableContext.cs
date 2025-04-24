@@ -4,7 +4,7 @@ using UniRx;
 
 namespace Game.Interactables.Contexts
 {
-    public class SellableContext : IInteractableContext
+    public class SellableContext : IContext
     {
         private ReactiveProperty<float> _cost;
         public IReadOnlyReactiveProperty<float> Cost => _cost;
@@ -20,7 +20,7 @@ namespace Game.Interactables.Contexts
         }
     }
 
-    public class ReturnableContext : IInteractableContext
+    public class ReturnableContext : IContext
     {
         private readonly ReactiveTrigger _onReturn;
 

@@ -83,13 +83,13 @@ namespace Game.Interactables
             _actions[interactionType].ForEach(action => action.ApplyAction(resultContext));
             OnInteract(resultContext, interactionType);
         }
-        public ContextContainer AddContext<TContext>(TContext context) where TContext : IInteractableContext
+        public ContextContainer AddContext<TContext>(TContext context) where TContext : IContext
         {
             _contextContainer.AddContext(context);
             return _contextContainer;
         }
 
-        public bool TryGetContext<TContext>(out TContext context) where TContext : IInteractableContext
+        public bool TryGetContext<TContext>(out TContext context) where TContext : IContext
         {
             return _contextContainer.TryGetContext(out context);
         }

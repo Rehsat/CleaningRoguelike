@@ -20,7 +20,9 @@ namespace Game.Configs
     [Serializable]
     public struct ResourceConfig
     {
+        [SerializeField] private bool _hasMaximum;
         [SerializeField] private Sprite _icon;
         public Sprite Icon => _icon;
+        public bool HasMaximum => _hasMaximum;
     }
 }

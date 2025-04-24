@@ -1,6 +1,6 @@
 namespace Game.Interactables
 {
-    public class InteractedObjectContext : IInteractableContext
+    public class InteractedObjectContext : IContext
     {
         public InteractableView InteractableView { get; }
 

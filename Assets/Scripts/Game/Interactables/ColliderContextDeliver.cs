@@ -22,7 +22,7 @@ namespace Game.Interactables
         
         }
 
-        public void AddContext(IInteractableContext context)
+        public void AddContext(IContext context)
         {
             _contextContainer.AddContext(context);
         }

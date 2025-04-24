@@ -1,6 +1,8 @@
 using Game.Clothing;
 using Game.Configs;
 using Game.GameStateMachine;
+using Game.Interactables;
+using Game.Interactables.Contexts;
 using Game.Interactables.Factories;
 using Game.Player.Data;
 using Game.Player.PayerInput;
@@ -15,6 +17,7 @@ namespace Game
     {
         [SerializeField] private GameGlobalConfig _globalConfig;
         [SerializeField] private SceneObjectsContainer _sceneObjects;
+        private GlobalContextContainer _globalContextContainer;
         public override void InstallBindings()
         {
             InstallConfigs(_globalConfig);
@@ -29,7 +32,9 @@ namespace Game
             
             Container.Bind<ObjectSeller>().FromNew().AsSingle();
             Container.Bind<QuotaCostManager>().FromNew().AsSingle();
+            
             InstallStateMachine();
+            InstallGlobalContext();
         }
 
         private void InstallConfigs(GameGlobalConfig globalConfig)
@@ -49,6 +54,13 @@ namespace Game
 
             Container.Bind<GameStateMachine.GameStateMachine>().FromNew().AsSingle();
             Container.Bind<CurrentGameStateObserver>().FromNew().AsSingle();
+        }
+
+        private void InstallGlobalContext()
+        {
+            Container.Bind<IContext>().To<GameValuesContext>().AsSingle();
+            
+            Container.BindInstance(_globalContextContainer).AsSingle().NonLazy();
         }
 
     }

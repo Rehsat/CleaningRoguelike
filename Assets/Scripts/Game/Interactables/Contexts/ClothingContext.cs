@@ -2,7 +2,7 @@
 
 namespace Game.Interactables
 {
-    public class ClothingContext : IInteractableContext
+    public class ClothingContext : IContext
     {
         public ClothingView Clothing { get; }
 

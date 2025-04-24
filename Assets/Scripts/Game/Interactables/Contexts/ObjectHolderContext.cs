@@ -2,7 +2,7 @@
 
 namespace Game.Interactables.Contexts
 {
-    public class ObjectHolderContext : IInteractableContext
+    public class ObjectHolderContext : IContext
     {
         public ObjectHolder ObjectHolder { get; }
 

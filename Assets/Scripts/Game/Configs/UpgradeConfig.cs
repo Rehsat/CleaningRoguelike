@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.Upgrades
 {
-    [CreateAssetMenu(menuName = "GameConfig/UpgradeConfig", fileName = "UpgradeConfig")]
+    [CreateAssetMenu(menuName = "GameConfigs/UpgradeConfig", fileName = "UpgradeConfig")]
     public class UpgradeConfig : ScriptableObject
     {
         [SerializeField] private UpgradeConfigData _config;

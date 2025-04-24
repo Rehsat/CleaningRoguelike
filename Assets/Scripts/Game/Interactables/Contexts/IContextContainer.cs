@@ -2,8 +2,8 @@
 {
     public interface IContextContainer
     {
-        public ContextContainer AddContext<TContext>(TContext context) where TContext : IInteractableContext;
-        public bool TryGetContext<TContext>(out TContext context) where TContext : IInteractableContext;
+        public ContextContainer AddContext<TContext>(TContext context) where TContext : IContext;
+        public bool TryGetContext<TContext>(out TContext context) where TContext : IContext;
     }
-    public interface IInteractableContext{}
+    public interface IContext{}
 }

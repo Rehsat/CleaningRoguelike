@@ -26,8 +26,5 @@ namespace Game.Player.Data
     public enum Stat
     {
         None = 0,
-        Speed = 1,
-        ThrowPower = 2,
-        Income= 3,
     }
 }

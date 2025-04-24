@@ -59,7 +59,7 @@ public class ResourceData
 
     public void SetCurrentValue(float value)
     {
-        if (value > _maxValue.Value)
+        if (_config.HasMaximum && value > _maxValue.Value)
         {
             _currentValue.Value = _maxValue.Value;
             return;
@@ -79,7 +79,11 @@ public class ResourceData
 }
 public enum Resource
 {
-    QuotaMoney,
-    UpgradeMoney,
-    ActiveClothing
+    QuotaMoney = 0,
+    UpgradeMoney = 1,
+    ActiveClothing = 2,
+    None = 3,
+    Income= 4,
+    PlayerSpeed = 5,
+    PlayerThrowPower = 6,
 }
