@@ -15,7 +15,7 @@ public class CurrentGameStateObserver
         _currentGameState = new ReactiveProperty<GameState>();
         var gameStateByType = new Dictionary<Type, GameState>()
         {
-            {typeof(UpgradeState), GameState.Upgrade},
+            {typeof(UpgradeGameState), GameState.Upgrade},
             {typeof(DoWorkState), GameState.Work}
         };
         

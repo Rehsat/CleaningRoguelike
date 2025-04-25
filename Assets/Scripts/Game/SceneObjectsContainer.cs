@@ -43,7 +43,7 @@ public class SceneObjectsContainer : MonoBehaviour
         return _sceneObjects[sceneObject];
     }
 
-    public T GetObjectsComponent<T>(SceneObject sceneObject) where T : Component
+    public T GetObjectsComponent<T>(SceneObject sceneObject)
     {
         return GetObject(sceneObject).GetComponent<T>();
     }
@@ -52,5 +52,6 @@ public class SceneObjectsContainer : MonoBehaviour
 public enum SceneObject
 {
     QuotaStartButton,
-    QuotaTimeProgressBar
+    QuotaTimeProgressBar,
+    UpgradeView
 }

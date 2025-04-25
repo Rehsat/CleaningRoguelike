@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Game.Upgrades;
 using Gasme.Configs;
 using UnityEngine;
 
@@ -8,5 +10,6 @@ namespace Game.Configs
     {
         [field:SerializeField] public PrefabsContainer  PrefabsContainer { get; private set; }
         [field:SerializeField] public ResourceConfigsList  ResourceConfigsList { get; private set; }
+        [field:SerializeField] public List<UpgradeConfig> StartPossibleConfigs { get; private set; }
     }
 }

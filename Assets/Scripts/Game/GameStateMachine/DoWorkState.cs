@@ -43,7 +43,7 @@ namespace Game.GameStateMachine
 
         private void OnQuotaTimerComplete()
         {
-            _gameStateMachine.EnterState<UpgradeState>();
+            _gameStateMachine.EnterState<UpgradeGameState>();
             _quotaCostManager.ChangeQuotaIterationBy(1);
         }
     }

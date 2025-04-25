@@ -4,7 +4,7 @@ using Zenject;
 
 namespace Game.GameStateMachine
 {
-    public class UpgradeState : ILevelState
+    public class UpgradeGameState : ILevelState
     {
         private readonly InteractableButton _startQuotaButton;
 
@@ -12,7 +12,7 @@ namespace Game.GameStateMachine
         private GameStateMachine _stateMachine;
 
         [Inject]
-        public UpgradeState(SceneObjectsContainer sceneObjects)
+        public UpgradeGameState(SceneObjectsContainer sceneObjects)
         {
             _startQuotaButton = sceneObjects.GetObjectsComponent<InteractableButton>(SceneObject.QuotaStartButton);
             _startQuotaButton.Construct();

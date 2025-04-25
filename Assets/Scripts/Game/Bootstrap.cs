@@ -40,7 +40,7 @@ public class Bootstrap : MonoBehaviour
         _clothingSpawnButton.AddActionApplier(clothingSpawner);
         InitUI();
         
-        _gameStateMachine.EnterState<UpgradeState>();
+        _gameStateMachine.EnterState<UpgradeGameState>();
     }
 
     private void InitUI()
