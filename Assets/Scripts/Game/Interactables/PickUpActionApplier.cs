@@ -25,6 +25,26 @@ namespace Game.Interactables
         }
     }
     
+
+    public class GameValueChangeAction : IAction
+    {
+        private readonly Resource _valueType;
+        private readonly float _changeBy;
+
+        public GameValueChangeAction(Resource valueType, float changeBy)
+        {
+            _valueType = valueType;
+            _changeBy = changeBy;
+        }
+        public void ApplyAction(ContextContainer context)
+        {
+            if (context.TryGetContext<GameValuesContext>(out var gameValues))
+            {
+                gameValues.GameResources.GetResource(_valueType).ChangeValueBy(_changeBy);
+            }
+        }
+    }
+    
     public class PickUpAction : IAction
     {
         public void ApplyAction(ContextContainer contextContainer)
@@ -41,7 +61,7 @@ namespace Game.Interactables
         }
     }
 
-    public class TimedAction: IProgressModelContainer, IWorkAction //where TAction : IAction
+    public class TimedAction: IWorkAction //where TAction : IAction
     {
         private readonly IAction _action;
 
