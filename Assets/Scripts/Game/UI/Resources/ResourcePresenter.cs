@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ResourcePresenter 
 {
-    public ResourcePresenter(ResourceData resource, IResourceView resourceView)
+    public ResourcePresenter(PlayerGameValueData playerGameValue, IResourceView resourceView)
     {
-        resourceView.SetIcon(resource.Config.Icon);
-        resource.CurrentValue.Subscribe(resourceValue=>
+        resourceView.SetIcon(playerGameValue.Config.Icon);
+        playerGameValue.CurrentValue.Subscribe(resourceValue=>
         {
-            resourceView.UpdateResourceValue(resourceValue, resource.MaxValue.Value);
+            resourceView.UpdateResourceValue(resourceValue, playerGameValue.MaxValue.Value);
         });
     }
 }

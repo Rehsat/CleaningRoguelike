@@ -7,6 +7,7 @@ using Game.Interactables.Factories;
 using Game.Player.Data;
 using Game.Player.PayerInput;
 using Game.Quota;
+using Game.UI.Resources;
 using Gasme.Configs;
 using UnityEngine;
 using Zenject;
@@ -17,22 +18,24 @@ namespace Game
     {
         [SerializeField] private GameGlobalConfig _globalConfig;
         [SerializeField] private SceneObjectsContainer _sceneObjects;
+        [SerializeField] private BounceAnimator _bounceAnimator;
         private GlobalContextContainer _globalContextContainer;
         public override void InstallBindings()
         {
             InstallConfigs(_globalConfig);
             
             Container.BindInstance(_sceneObjects).AsSingle();
+            Container.BindInstance(_bounceAnimator).AsSingle();
             
             InstallFactories();
             
             Container.Bind<PlayerInput>().FromNew().AsSingle();
             Container.Bind<ObjectHolder>().FromNew().AsSingle();
-            Container.Bind<PlayerResources>().FromNew().AsSingle();
+            Container.Bind<GameValuesContainer>().FromNew().AsSingle();
+            Container.Bind<GameValueChangeObserver>().FromNew().AsSingle().NonLazy();
             
             Container.Bind<ObjectSeller>().FromNew().AsSingle();
             Container.Bind<QuotaCostManager>().FromNew().AsSingle();
-            
             InstallStateMachine();
             InstallGlobalContext();
         }

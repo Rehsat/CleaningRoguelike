@@ -9,17 +9,17 @@ namespace Game.Clothing
     public class ClothingFactory : IFactory<ClothingView>
     {
         private readonly ClothingView _clothingPrefab;
-        private readonly ResourceData _activeClothingResource;
+        private readonly PlayerGameValueData _activeClothingPlayerGameValue;
 
-        public ClothingFactory(ClothingView clothingPrefab, ResourceData activeClothingResource)
+        public ClothingFactory(ClothingView clothingPrefab, PlayerGameValueData activeClothingPlayerGameValue)
         {
             _clothingPrefab = clothingPrefab;
-            _activeClothingResource = activeClothingResource;
+            _activeClothingPlayerGameValue = activeClothingPlayerGameValue;
         }
 
         public ClothingView Create()
         {
-            if (_activeClothingResource.IsCurrentValueMaximum)
+            if (_activeClothingPlayerGameValue.IsCurrentValueMaximum)
                 return null;
 
             var onReturnTrigger = new ReactiveTrigger();
@@ -31,8 +31,8 @@ namespace Game.Clothing
                 .AddContext(new SellableContext(1))
                 .AddContext(new ReturnableContext(onReturnTrigger));
             
-            _activeClothingResource.ChangeValueBy(1);
-            onReturnTrigger.SubscribeWithSkip(() => _activeClothingResource.ChangeValueBy(-1));
+            _activeClothingPlayerGameValue.ChangeValueBy(1);
+            onReturnTrigger.SubscribeWithSkip(() => _activeClothingPlayerGameValue.ChangeValueBy(-1));
             return newClothing;
         }
     }

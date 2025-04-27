@@ -10,10 +10,10 @@ namespace Game.Clothing
 {
     public class ObjectSeller
     {
-        private readonly PlayerResources _resources;
+        private readonly GameValuesContainer _resources;
         private readonly ParticleSystem _sellParticle;
 
-        public ObjectSeller(PlayerResources resources, PrefabsContainer prefabsContainer)
+        public ObjectSeller(GameValuesContainer resources, PrefabsContainer prefabsContainer)
         {
             _resources = resources;
             var particlePrefab = prefabsContainer.GetPrefab(Prefab.SellParticle);
@@ -28,7 +28,7 @@ namespace Game.Clothing
                 if (contextContainer.TryGetContext<SellableContext>(out var sellable))
                 {
                     potentialSellable.gameObject.SetActive(false);
-                    _resources.GetResource(Resource.QuotaMoney).ChangeValueBy(sellable.Cost.Value);
+                    _resources.GetPlayerValue(PlayerValue.QuotaMoney).ChangeValueBy(sellable.Cost.Value);
                     _sellParticle.transform.position = potentialSellable.transform.position;
                     SpawnParticle(sellable.Cost.Value);
                 }

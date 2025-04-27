@@ -26,9 +26,9 @@ namespace Game.Interactables.Contexts
 
     public class GameValuesContext : IContext
     {
-        public PlayerResources GameResources { get; private set; }
+        public GameValuesContainer GameResources { get; private set; }
         [Inject]
-        public GameValuesContext(PlayerResources gameResources)
+        public GameValuesContext(GameValuesContainer gameResources)
         {
             GameResources = gameResources;
         }

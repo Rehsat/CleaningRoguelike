@@ -28,10 +28,10 @@ namespace Game.Interactables
 
     public class GameValueChangeAction : IAction
     {
-        private readonly Resource _valueType;
+        private readonly PlayerValue _valueType;
         private readonly float _changeBy;
 
-        public GameValueChangeAction(Resource valueType, float changeBy)
+        public GameValueChangeAction(PlayerValue valueType, float changeBy)
         {
             _valueType = valueType;
             _changeBy = changeBy;
@@ -40,7 +40,7 @@ namespace Game.Interactables
         {
             if (context.TryGetContext<GameValuesContext>(out var gameValues))
             {
-                gameValues.GameResources.GetResource(_valueType).ChangeValueBy(_changeBy);
+                gameValues.GameResources.GetPlayerValue(_valueType).ChangeValueBy(_changeBy);
             }
         }
     }

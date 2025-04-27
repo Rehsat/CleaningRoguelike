@@ -17,15 +17,15 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] private InteractableButton _clothingSpawnButton;
     
     [SerializeField] private ResourceView _quotaResourceView;
-    [SerializeField] private SerializableDictionary<Resource, ResourceView> _resourceViews;
+    [SerializeField] private SerializableDictionary<PlayerValue, ResourceView> _resourceViews;
 
-    private PlayerResources _playerResources;
+    private GameValuesContainer _gameValuesContainer;
     private GameStateMachine _gameStateMachine;
 
     [Inject]
-    public void Construct(PlayerResources resources, ObjectSeller seller, GameStateMachine gameStateMachine)
+    public void Construct(GameValuesContainer resources, ObjectSeller seller, GameStateMachine gameStateMachine)
     {
-        _playerResources = resources;
+        _gameValuesContainer = resources;
         _gameStateMachine = gameStateMachine;
         seller.SetSellCollider(_sellCollider);
     }
@@ -34,7 +34,7 @@ public class Bootstrap : MonoBehaviour
         Application.targetFrameRate = 144;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        var clothingFactory = new ClothingFactory(_clothingPrefab, _playerResources.GetResource(Resource.ActiveClothing));
+        var clothingFactory = new ClothingFactory(_clothingPrefab, _gameValuesContainer.GetPlayerValue(PlayerValue.ActiveClothing));
         var clothingSpawner = new ClothingSpawner(clothingFactory, _clothingSpawnPosition);
         _clothingSpawnButton.Construct();
         _clothingSpawnButton.AddActionApplier(clothingSpawner);
@@ -49,7 +49,7 @@ public class Bootstrap : MonoBehaviour
         {
             var resourceType = resourcePair.Key;
             var resourceView = resourcePair.Value;
-            var resourcePresenter = new ResourcePresenter(_playerResources.GetResource(resourceType), resourceView);
+            var resourcePresenter = new ResourcePresenter(_gameValuesContainer.GetPlayerValue(resourceType), resourceView);
         }
     }
 }

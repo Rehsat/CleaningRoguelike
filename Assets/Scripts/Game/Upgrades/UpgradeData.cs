@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Game.Interactables;
+using UniRx;
 using UnityEngine;
 
 namespace Game.Upgrades
@@ -8,10 +9,14 @@ namespace Game.Upgrades
     {
         private readonly UpgradeConfigData _configData;
         private List<IAction> _upgradeActions;
+        private ReactiveProperty<bool> _isBought;
+
+        public ReactiveProperty<bool> IsBought => _isBought;
 
         public UpgradeData(UpgradeConfigData configData)
         {
             _upgradeActions = new List<IAction>();
+            _isBought = new ReactiveProperty<bool>();
             _configData = configData;
         }
 
@@ -19,6 +24,11 @@ namespace Game.Upgrades
         {
             _upgradeActions.Add(action);
             return this;
+        }
+
+        public void SetIsBought(bool isBought)
+        {
+            _isBought.Value = isBought;
         }
     }
 

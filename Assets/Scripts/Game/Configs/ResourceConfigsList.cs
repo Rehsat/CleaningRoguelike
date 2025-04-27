@@ -9,11 +9,11 @@ namespace Game.Configs
     [CreateAssetMenu(menuName = "GameConfigs/ResourceConfigsList", fileName = "ResourceConfigsList")]
     public class ResourceConfigsList : ScriptableObject
     {
-        [SerializeField] private SerializableDictionary<Resource, ResourceConfig> _resourceConfigs;
+        [SerializeField] private SerializableDictionary<PlayerValue, ResourceConfig> _resourceConfigs;
 
-        public ResourceConfig GetResourceConfig(Resource resourceType)
+        public ResourceConfig GetResourceConfig(PlayerValue playerValueType)
         {
-            return _resourceConfigs[resourceType];
+            return _resourceConfigs[playerValueType];
         }
     }
 

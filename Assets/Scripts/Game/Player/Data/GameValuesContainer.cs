@@ -8,48 +8,57 @@ using UniRx;
 using UnityEngine;
 using Zenject;
 
-public class PlayerResources
+public class GameValuesContainer
 {
-    private Dictionary<Resource, ResourceData> _playerResources;
-
-    public static PlayerResources Instance { get; private set; } // Временно синглтон, пока не придумаю как сделать лучше
+    private Dictionary<PlayerValue, PlayerGameValueData> _playerResources;
 
     [Inject]
-    public PlayerResources(ResourceConfigsList resourceConfigsList)
+    public GameValuesContainer(ResourceConfigsList resourceConfigsList)
     {
-        if(Instance != null) return;
-        Instance = this;
-        
-        _playerResources = new Dictionary<Resource, ResourceData>();
-        foreach (Resource interaction in Enum.GetValues(typeof(Resource)))
+        _playerResources = new Dictionary<PlayerValue, PlayerGameValueData>();
+        foreach (PlayerValue interaction in Enum.GetValues(typeof(PlayerValue)))
             _playerResources.Add(
                 interaction, 
-                new ResourceData(5, resourceConfigsList.GetResourceConfig(interaction)));
+                new PlayerGameValueData(5, resourceConfigsList.GetResourceConfig(interaction)));
     }
 
-    public ResourceData GetResource(Resource resourceType)
+    public PlayerGameValueData GetPlayerValue(PlayerValue playerValueType)
     {
-        return _playerResources[resourceType];
+        return _playerResources[playerValueType];
     }
 }
 
-public class ResourceData
+public class PlayerGameValueData
 {
     private readonly ResourceConfig _config;
     
     private ReactiveProperty<float> _currentValue;
     private ReactiveProperty<float> _maxValue;
+    private ReactiveEvent<float> _onValueChanged;
+
+    private float _lastValue;
 
     public ResourceConfig Config => _config;
     public IReadOnlyReactiveProperty<float> CurrentValue => _currentValue;
     public IReadOnlyReactiveProperty<float> MaxValue => _maxValue;
+
+    public IReadOnlyReactiveEvent<float> OnValueChanged => _onValueChanged;
+
     public bool IsCurrentValueMaximum => _currentValue.Value >= _maxValue.Value;
 
-    public ResourceData(float maxValue, ResourceConfig config)
+    public PlayerGameValueData(float maxValue, ResourceConfig config)
     {
         _config = config;
-        _currentValue= new ReactiveProperty<float>();
+        _currentValue= new ReactiveProperty<float>(0);
         _maxValue = new ReactiveProperty<float>(maxValue);
+        _lastValue = 0;
+        _onValueChanged = new ReactiveEvent<float>();
+        _currentValue.Subscribe(newValue =>
+        {
+            var difference = newValue - _lastValue;
+            _lastValue = newValue;
+            _onValueChanged.Notify(difference);
+        });
     }
 
     public void ChangeValueBy(float value)
@@ -77,7 +86,7 @@ public class ResourceData
         _maxValue.Value = value;
     }
 }
-public enum Resource
+public enum PlayerValue
 {
     QuotaMoney = 0,
     UpgradeMoney = 1,
