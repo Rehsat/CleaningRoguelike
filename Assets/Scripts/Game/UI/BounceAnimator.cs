@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+// TODO отрефакторить
 public class BounceAnimator : MonoBehaviour
 {
     [Header("Settings")]
@@ -13,6 +14,7 @@ public class BounceAnimator : MonoBehaviour
     [SerializeField] private float scaleMultiplier = 1.2f;
     [SerializeField] private float fadeDelay = 0.3f;
     [SerializeField] private RectTransform _text;
+    [SerializeField] private Canvas _rootCanvas;
 
     private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
@@ -29,8 +31,8 @@ public class BounceAnimator : MonoBehaviour
 
     public void PlayBounceAnimation(RectTransform transformToAnimate, Vector3 position)
     {
-        transformToAnimate = _text;
         _rectTransform = transformToAnimate;
+        _rectTransform.parent = _rootCanvas.transform;
         _canvasGroup = transformToAnimate.GetComponent<CanvasGroup>();
 
         // Установка позиции и текста
