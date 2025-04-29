@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Game.UI
 {
-    public class TextWithImageView : MonoBehaviour
+    public class TextWithImageView : MonoBehaviour, IViewWithText, IViewWithImage
     {
         [SerializeField] private TMP_Text _text;
         [SerializeField] private Image _image;

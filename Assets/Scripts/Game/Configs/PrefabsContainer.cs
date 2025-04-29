@@ -31,7 +31,8 @@ namespace Gasme.Configs
     {
         SellParticle = 0,
         WashingMachine = 1,
-        TextWithImage = 2
+        TextWithImage = 2,
+        UpgradeView = 3
         
     }
 }
