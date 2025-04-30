@@ -8,6 +8,7 @@ using Game.Player.Data;
 using Game.Player.PayerInput;
 using Game.Quota;
 using Game.UI.Resources;
+using Game.Upgrades;
 using Gasme.Configs;
 using UnityEngine;
 using Zenject;
@@ -33,11 +34,16 @@ namespace Game
             Container.Bind<ObjectHolder>().FromNew().AsSingle();
             Container.Bind<GameValuesContainer>().FromNew().AsSingle();
             Container.Bind<GameValueChangeObserver>().FromNew().AsSingle().NonLazy();
-            
+
+            Container.Bind<UpgradesSelector>().FromNew().AsSingle();
+            Container.Bind<UpgradeController>().FromNew().AsSingle();
+
             Container.Bind<ObjectSeller>().FromNew().AsSingle();
             Container.Bind<QuotaCostManager>().FromNew().AsSingle();
-            InstallStateMachine();
+            
             InstallGlobalContext();
+            
+            InstallStateMachine();
         }
 
         private void InstallConfigs(GameGlobalConfig globalConfig)

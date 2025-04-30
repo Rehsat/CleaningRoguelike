@@ -30,6 +30,11 @@ namespace Game.Upgrades
         {
             _isBought.Value = isBought;
         }
+
+        public void ApplyActions(ContextContainer context)
+        {
+            _upgradeActions.ForEach(action => action.ApplyAction(context));
+        }
     }
 
     public abstract class ActionConfig : ScriptableObject

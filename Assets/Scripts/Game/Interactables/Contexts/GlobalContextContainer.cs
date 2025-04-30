@@ -6,7 +6,10 @@ namespace Game.Interactables.Contexts
     public class GlobalContextContainer : IContextContainer
     {
         private ContextContainer _contextContainer;
+        public ContextContainer ContextContainer => _contextContainer;
         [Inject]
+
+
         public GlobalContextContainer(List<IContext> contexts)
         {
             _contextContainer = new ContextContainer();

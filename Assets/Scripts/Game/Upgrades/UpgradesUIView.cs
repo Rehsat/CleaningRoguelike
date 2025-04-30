@@ -39,6 +39,11 @@ namespace Game.Upgrades
             }));
         }
 
+        public void SendUpgradeCallback(UpgradeData upgradeData, bool buySuccess)
+        {
+            
+        }
+
         public void SetUpgradesResetCost(float cost)
         {
         }

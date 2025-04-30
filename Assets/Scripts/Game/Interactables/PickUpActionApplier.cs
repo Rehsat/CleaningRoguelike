@@ -30,17 +30,25 @@ namespace Game.Interactables
     {
         private readonly PlayerValue _valueType;
         private readonly float _changeBy;
+        private readonly bool _maxValue;
 
-        public GameValueChangeAction(PlayerValue valueType, float changeBy)
+        public GameValueChangeAction(PlayerValue valueType, float changeBy, bool maxValue)
         {
             _valueType = valueType;
             _changeBy = changeBy;
+            _maxValue = maxValue;
         }
         public void ApplyAction(ContextContainer context)
         {
             if (context.TryGetContext<GameValuesContext>(out var gameValues))
             {
-                gameValues.GameResources.GetPlayerValue(_valueType).ChangeValueBy(_changeBy);
+                var resource =  gameValues.GameResources.GetPlayerValue(_valueType);
+
+                if (_maxValue)
+                    resource.ChangeValueBy(_changeBy);
+                else
+                    resource.ChangeMaxValueBy(_changeBy);
+
             }
         }
     }

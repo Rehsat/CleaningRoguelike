@@ -9,6 +9,7 @@ namespace Game.Upgrades
         public IReadOnlyReactiveTrigger OnUpgradesReset { get;}
         public IReadOnlyReactiveEvent<UpgradeData> OnTryBuyUpgrade { get; }
         public void SetUpgrades(List<UpgradeData> upgrades);
+        public void SendUpgradeCallback(UpgradeData upgradeData, bool buySuccess);
         public void SetUpgradesResetCost(float cost);
     }
 }

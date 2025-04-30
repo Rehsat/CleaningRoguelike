@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 983485360966762468, guid: 34866f614073d7144aca371c7ef7a254, type: 3}
       propertyPath: m_Name
-      value: WashingMachineAutomatic Variant
+      value: WashingMachineAutomatic
       objectReference: {fileID: 0}
     - target: {fileID: 3340940491773364683, guid: 34866f614073d7144aca371c7ef7a254, type: 3}
       propertyPath: m_LocalPosition.x
@@ -51,6 +51,10 @@ PrefabInstance:
     - target: {fileID: 3340940491773364683, guid: 34866f614073d7144aca371c7ef7a254, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115263246123873579, guid: 34866f614073d7144aca371c7ef7a254, type: 3}
+      propertyPath: _workMode
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

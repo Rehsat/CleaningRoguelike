@@ -40,23 +40,33 @@ namespace Game.Upgrades
                     isFirstTime = false;
                     return;
                 }
-            
-                _isAnimationInProgress = true;
-            
-                var resultRotation = isShowing ? _showRotation : _hideRotation;
-                var startRotation = isShowing ? _hideRotation : _showRotation;
-                var ease = isShowing ? Ease.OutBack : Ease.InBack;
-                _rootTransform
-                    .DOLocalRotate(new Vector3(startRotation, _rootTransform.localEulerAngles.y), 0);
-                _rootTransform
-                    .DOLocalRotate(new Vector3(resultRotation, _rootTransform.localRotation.y), _animationDuration)
-                    .SetEase(ease)
-                    .OnComplete((() => _isAnimationInProgress = false));
+                SetShowState(isShowing);
             }));
+        }
+
+        private void SetShowState(bool isShowing)
+        {
+            _isAnimationInProgress = true;
+            
+            var resultRotation = isShowing ? _showRotation : _hideRotation;
+            var startRotation = isShowing ? _hideRotation : _showRotation;
+            var ease = isShowing ? Ease.OutBack : Ease.InBack;
+                
+            _rootTransform
+                .DOLocalRotate(new Vector3(startRotation, _rootTransform.localEulerAngles.y), 0);
+            _rootTransform
+                .DOLocalRotate(new Vector3(resultRotation, _rootTransform.localRotation.y), _animationDuration)
+                .SetEase(ease)
+                .OnComplete((() => _isAnimationInProgress = false));
         }
         public void SetUpgrades(List<UpgradeData> upgrades)
         {
             _upgradesUIView.SetUpgrades(upgrades);
+        }
+
+        public void SendUpgradeCallback(UpgradeData upgradeData, bool buySuccess)
+        {
+            _upgradesUIView.SendUpgradeCallback(upgradeData, buySuccess);
         }
 
         public void SetUpgradesResetCost(float cost)

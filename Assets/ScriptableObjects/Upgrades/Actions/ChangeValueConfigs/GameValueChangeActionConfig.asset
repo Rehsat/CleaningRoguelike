@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8aeb31a8502443296640277a7539f59, type: 3}
-  m_Name: AddResourceConfig
+  m_Script: {fileID: 11500000, guid: 79a02fbed5cc02c49822a89a71e4de89, type: 3}
+  m_Name: GameValueChangeActionConfig
   m_EditorClassIdentifier: 
-  _config:
-    <Name>k__BackingField: 
-    <Cost>k__BackingField: 0
-    <Icon>k__BackingField: {fileID: 0}
-  _actionsOnApply: []
+  _maxValue: 1
+  _valueType: 2
+  _change: 1
