@@ -12,6 +12,7 @@ namespace Game.Upgrades
         private ReactiveProperty<bool> _isBought;
 
         public ReactiveProperty<bool> IsBought => _isBought;
+        public UpgradeConfigData ConfigData => _configData;
 
         public UpgradeData(UpgradeConfigData configData)
         {

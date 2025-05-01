@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using EasyFramework.ReactiveEvents;
@@ -18,6 +19,7 @@ namespace Game.Upgrades
         [SerializeField] private float _animationDuration = 0.5f;
         private bool _isAnimationInProgress;
         private ReactiveProperty<bool> _isUpgradeShowed;
+        private CompositeDisposable _compositeDisposable;
         
         public IReadOnlyReactiveTrigger OnUpgradesReset => _upgradesUIView.OnUpgradesReset;
         public IReadOnlyReactiveEvent<UpgradeData> OnTryBuyUpgrade => _upgradesUIView.OnTryBuyUpgrade;
@@ -25,13 +27,16 @@ namespace Game.Upgrades
         [Inject]
         public void Construct(PlayerInput playerInput)
         {
+            _compositeDisposable = new CompositeDisposable();
             _isUpgradeShowed = new ReactiveProperty<bool>();
+            
             playerInput.OnUpgradesOpenButtonPressed.SubscribeWithSkip((() =>
             {
                 if (_isAnimationInProgress) return;
                 _isUpgradeShowed.Value = !_isUpgradeShowed.Value;
-            }));
+            })).AddTo(_compositeDisposable);
 
+            
             var isFirstTime = true;
             _isUpgradeShowed.Subscribe((isShowing =>
             {
@@ -40,8 +45,10 @@ namespace Game.Upgrades
                     isFirstTime = false;
                     return;
                 }
+                
                 SetShowState(isShowing);
-            }));
+                
+            })).AddTo(_compositeDisposable);
         }
 
         private void SetShowState(bool isShowing)
@@ -72,6 +79,11 @@ namespace Game.Upgrades
         public void SetUpgradesResetCost(float cost)
         {
             _upgradesUIView.SetUpgradesResetCost(cost);
+        }
+
+        private void OnDestroy()
+        {
+            _compositeDisposable.Dispose();
         }
     }
 }

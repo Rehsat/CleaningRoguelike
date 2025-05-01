@@ -1,4 +1,5 @@
 using Gasme.Configs;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -8,10 +9,12 @@ namespace Game.UI.Resources
     {
         private readonly BounceAnimator _bounceAnimator;
         private readonly PrefabsContainer _prefabsContainer;
+        private CompositeDisposable _compositeDisposable;
 
         [Inject]
         public GameValueChangeObserver(GameValuesContainer gameValues, BounceAnimator bounceAnimator, PrefabsContainer prefabsContainer)
         {
+            _compositeDisposable = new CompositeDisposable();
             _bounceAnimator = bounceAnimator;
             _prefabsContainer = prefabsContainer;
             StartObserveValue(gameValues.GetPlayerValue(PlayerValue.QuotaMoney));
