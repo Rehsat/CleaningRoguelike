@@ -50,6 +50,7 @@ namespace Game
         {
             Container.BindInstance(globalConfig.PrefabsContainer).AsSingle();
             Container.BindInstance(globalConfig.ResourceConfigsList).AsSingle();
+            Container.BindInstance(globalConfig).AsSingle();
         }
         private void InstallFactories()
         {

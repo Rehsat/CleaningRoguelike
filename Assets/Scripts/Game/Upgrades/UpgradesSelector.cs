@@ -4,6 +4,7 @@ using Game.Configs;
 using Game.GameStateMachine;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Upgrades
 {
@@ -15,6 +16,7 @@ namespace Game.Upgrades
 
         public IReadOnlyReactiveProperty<List<UpgradeData>> CurrentUpgrades => _currentUpgrades;
 
+        [Inject]
         public UpgradesSelector(GameGlobalConfig config)
         {
             _config = config;

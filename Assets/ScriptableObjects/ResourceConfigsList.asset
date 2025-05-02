@@ -22,7 +22,7 @@ MonoBehaviour:
       _icon: {fileID: 21300000, guid: 9d00a3a766a55f7429ecb8d7d1b308e2, type: 3}
     - _hasMaximum: 0
       _icon: {fileID: 21300000, guid: 906536cfe4b27184c890b7ca5441540a, type: 3}
-    - _hasMaximum: 0
+    - _hasMaximum: 1
       _icon: {fileID: 0}
     - _hasMaximum: 0
       _icon: {fileID: 0}

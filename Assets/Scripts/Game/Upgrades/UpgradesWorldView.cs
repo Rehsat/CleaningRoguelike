@@ -71,9 +71,9 @@ namespace Game.Upgrades
             _upgradesUIView.SetUpgrades(upgrades);
         }
 
-        public void SendUpgradeCallback(UpgradeData upgradeData, bool buySuccess)
+        public void ApplyUpgradeCallback(UpgradeData upgradeData, bool buySuccess)
         {
-            _upgradesUIView.SendUpgradeCallback(upgradeData, buySuccess);
+            _upgradesUIView.ApplyUpgradeCallback(upgradeData, buySuccess);
         }
 
         public void SetUpgradesResetCost(float cost)

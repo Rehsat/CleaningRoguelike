@@ -22,6 +22,7 @@ public class Bootstrap : MonoBehaviour
     private GameValuesContainer _gameValuesContainer;
     private GameStateMachine _gameStateMachine;
 
+    //TODO Перенести в bootstrap state
     [Inject]
     public void Construct(GameValuesContainer resources, ObjectSeller seller, GameStateMachine gameStateMachine)
     {
@@ -32,8 +33,8 @@ public class Bootstrap : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 144;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+       // Cursor.lockState = CursorLockMode.Locked;
+       // Cursor.visible = false;
         var clothingFactory = new ClothingFactory(_clothingPrefab, _gameValuesContainer.GetPlayerValue(PlayerValue.ActiveClothing));
         var clothingSpawner = new ClothingSpawner(clothingFactory, _clothingSpawnPosition);
         _clothingSpawnButton.Construct();

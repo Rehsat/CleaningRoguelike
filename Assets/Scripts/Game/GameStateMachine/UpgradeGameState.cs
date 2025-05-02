@@ -8,14 +8,16 @@ namespace Game.GameStateMachine
 {
     public class UpgradeGameState : ILevelState
     {
+        private readonly UpgradeController _upgradeController;
         private readonly InteractableButton _startQuotaButton;
 
         private CompositeDisposable _compositeDisposable;
         private GameStateMachine _stateMachine;
 
         [Inject]
-        public UpgradeGameState(SceneObjectsContainer sceneObjects)
+        public UpgradeGameState(SceneObjectsContainer sceneObjects, UpgradeController upgradeController)
         {
+            _upgradeController = upgradeController;
             _startQuotaButton = sceneObjects.GetObjectsComponent<InteractableButton>(SceneObject.QuotaStartButton);
             _startQuotaButton.Construct();
         }
@@ -27,6 +29,8 @@ namespace Game.GameStateMachine
         {
             _compositeDisposable?.Dispose();
             _compositeDisposable = new CompositeDisposable();
+            
+            _upgradeController.SelectNewUpgrades(3);
             
             _startQuotaButton.SetEnabled(true);
             _startQuotaButton.OnInteracted.SubscribeWithSkip((() =>
@@ -48,9 +52,13 @@ namespace Game.GameStateMachine
 
     public class BootstrapState : ILevelState
     {
-        public BootstrapState(UpgradeController upgradeController, SceneObjectsContainer sceneObjectsContainer, GlobalContextContainer globalContextContainer)
+        private GameStateMachine _gameStateMachine;
+        public BootstrapState(UpgradeController upgradeController, 
+            SceneObjectsContainer sceneObjectsContainer, 
+            GlobalContextContainer globalContextContainer)
         {
             
+            _gameStateMachine.EnterState<UpgradeGameState>();
         }
         public void Enter()
         {
@@ -64,7 +72,7 @@ namespace Game.GameStateMachine
 
         public void SetStateMachine(GameStateMachine stateMachine)
         {
-            throw new System.NotImplementedException();
+            _gameStateMachine = stateMachine;
         }
         public void OnUpdate(){}
     }

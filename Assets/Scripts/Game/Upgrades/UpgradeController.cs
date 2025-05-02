@@ -2,6 +2,8 @@ using Game.Interactables;
 using Game.Interactables.Contexts;
 using Zenject;
 using UniRx;
+using UnityEngine;
+
 namespace Game.Upgrades
 {
     public class UpgradeController
@@ -26,7 +28,7 @@ namespace Game.Upgrades
         private void TryBuyUpgrade(UpgradeData upgradeData)
         {
             upgradeData.ApplyActions(_globalContextContainer);
-            _upgradeView.SendUpgradeCallback(upgradeData, true);
+            _upgradeView.ApplyUpgradeCallback(upgradeData, true);
         }
         public void SelectNewUpgrades(int upgradesCount)
         {

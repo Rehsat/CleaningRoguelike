@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <PrefabsContainer>k__BackingField: {fileID: 11400000, guid: aa932b7951e7c1440ace6dd61f6185af, type: 2}
   <ResourceConfigsList>k__BackingField: {fileID: 11400000, guid: 5174adec75143a2489b2eeea669b3136, type: 2}
-  <StartPossibleConfigs>k__BackingField: []
+  <StartPossibleConfigs>k__BackingField:
+  - {fileID: 11400000, guid: 980ba83f6ab245745bab07cc8e95401d, type: 2}
+  - {fileID: 11400000, guid: 980ba83f6ab245745bab07cc8e95401d, type: 2}
