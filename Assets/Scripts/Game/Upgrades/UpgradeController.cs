@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Game.Upgrades
 {
-    public class UpgradeController : IDisposable
+    public class UpgradeController : IDisposable, IGlobalContextListener
     {
         private UpgradesSelector _upgradesSelector;
         private IUpgradeView _upgradeView;
@@ -16,12 +16,13 @@ namespace Game.Upgrades
 
         private int _lastCountOfUpgrades;
         [Inject]
-        public UpgradeController(UpgradesSelector upgradesSelector, SceneObjectsContainer sceneObjectsContainer)
+     /*   public UpgradeController(UpgradesSelector upgradesSelector, SceneObjectsContainer sceneObjectsContainer)
         {
+            Debug.LogError(GetHashCode());
             var upgradeView = sceneObjectsContainer.GetObjectsComponent<IUpgradeView>(SceneObject.UpgradeView);
             Init(upgradesSelector, upgradeView);
-        }
-        private void Init(UpgradesSelector upgradesSelector, IUpgradeView upgradeView)
+        }*/
+        private UpgradeController(UpgradesSelector upgradesSelector, IUpgradeView upgradeView)
         {
             _compositeDisposable = new CompositeDisposable();
             _upgradeView = upgradeView;

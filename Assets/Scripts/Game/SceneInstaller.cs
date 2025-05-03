@@ -20,7 +20,6 @@ namespace Game
         [SerializeField] private GameGlobalConfig _globalConfig;
         [SerializeField] private SceneObjectsContainer _sceneObjects;
         [SerializeField] private BounceAnimator _bounceAnimator;
-        private GlobalContextContainer _globalContextContainer;
         public override void InstallBindings()
         {
             InstallConfigs(_globalConfig);
@@ -36,7 +35,9 @@ namespace Game
             Container.Bind<GameValueChangeObserver>().FromNew().AsSingle().NonLazy();
 
             Container.Bind<UpgradesSelector>().FromNew().AsSingle();
-            Container.Bind<UpgradeController>().FromNew().AsSingle();
+            var upgradeView =_sceneObjects.GetObjectsComponent<IUpgradeView>(SceneObject.UpgradeView);
+            Container.BindInstance(upgradeView).AsSingle();
+            Container.BindInterfacesAndSelfTo<UpgradeController>().AsSingle().NonLazy();
 
             Container.Bind<ObjectSeller>().FromNew().AsSingle();
             Container.Bind<QuotaCostManager>().FromNew().AsSingle();
@@ -70,7 +71,7 @@ namespace Game
         {
             Container.Bind<IContext>().To<GameValuesContext>().AsSingle();
             
-            Container.BindInstance(_globalContextContainer).AsSingle().NonLazy();
+            Container.Bind<GlobalContextContainer>().FromNew().AsSingle().NonLazy();
         }
 
     }

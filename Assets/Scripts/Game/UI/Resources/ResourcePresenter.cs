@@ -13,5 +13,9 @@ public class ResourcePresenter
         {
             resourceView.UpdateResourceValue(resourceValue, playerGameValue.MaxValue.Value);
         });
+        playerGameValue.MaxValue.Subscribe(maxResourceValue =>
+        {
+            resourceView.UpdateResourceValue(playerGameValue.CurrentValue.Value, maxResourceValue);
+        });
     }
 }

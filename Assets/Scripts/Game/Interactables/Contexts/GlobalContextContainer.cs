@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using Zenject;
 
 namespace Game.Interactables.Contexts
@@ -8,12 +9,11 @@ namespace Game.Interactables.Contexts
         private ContextContainer _contextContainer;
         public ContextContainer ContextContainer => _contextContainer;
         [Inject]
-
-
-        public GlobalContextContainer(List<IContext> contexts)
+        public GlobalContextContainer(List<IContext> contexts, List<IGlobalContextListener> listeners)
         {
             _contextContainer = new ContextContainer();
             contexts.ForEach(context => _contextContainer.AddContext(context));
+            listeners.ForEach(listener => listener.SetContext(this));
         }
         public ContextContainer AddContext<TContext>(TContext context) where TContext : IContext
         {
@@ -35,5 +35,10 @@ namespace Game.Interactables.Contexts
         {
             GameResources = gameResources;
         }
+    }
+
+    public interface IGlobalContextListener
+    {
+        public void SetContext(GlobalContextContainer globalContextContainer);
     }
 }

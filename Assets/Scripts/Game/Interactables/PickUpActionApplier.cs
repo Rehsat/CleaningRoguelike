@@ -45,9 +45,9 @@ namespace Game.Interactables
                 var resource =  gameValues.GameResources.GetPlayerValue(_valueType);
 
                 if (_maxValue)
-                    resource.ChangeValueBy(_changeBy);
-                else
                     resource.ChangeMaxValueBy(_changeBy);
+                else
+                    resource.ChangeValueBy(_changeBy);
 
             }
         }
