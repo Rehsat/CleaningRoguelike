@@ -10,22 +10,21 @@ using UnityEngine.UI;
 
 namespace Game.Upgrades
 {
-    public class UpgradeDataView : MonoBehaviour, IViewWithImage, IViewWithText, IPointerEnterHandler, IPointerExitHandler
+    public class UpgradeDataView : MonoBehaviour, IViewWithImage, IViewWithText, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
     {
         [SerializeField] private Image _upgradeIcon;
         [SerializeField] private TMP_Text _title;
         [SerializeField] private TMP_Text _price;
-        [SerializeField] private Button _buyButton;
 
         private UpgradeData _myUpgradeData;
         private ReactiveEvent<UpgradeData> _onBuy;
         public ReactiveEvent<UpgradeData> OnBuy => _onBuy;
+        public int UpgradeHashCode => _myUpgradeData.GetHashCode();
 
         public void Construct(UpgradeData upgradeData)
         {
             _onBuy = new ReactiveEvent<UpgradeData>();
             _myUpgradeData = upgradeData;
-            _buyButton.onClick.AddListener(SendBuyCallback);
             SetText(upgradeData.ConfigData.Name);
             SetImage(upgradeData.ConfigData.Icon);
             SetPrice(upgradeData.ConfigData.Cost);
@@ -51,11 +50,6 @@ namespace Game.Upgrades
             _price.text = $"{price}$";
         }
 
-        private void OnDestroy()
-        {
-            _buyButton.onClick.RemoveListener(SendBuyCallback);
-        }
-
         public void OnPointerEnter(PointerEventData eventData)
         {
             transform.DOScale(1.2f, 0.3f);
@@ -64,6 +58,11 @@ namespace Game.Upgrades
         public void OnPointerExit(PointerEventData eventData)
         {
             transform.DOScale(1f, 0.3f);
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            SendBuyCallback();
         }
     }
 }

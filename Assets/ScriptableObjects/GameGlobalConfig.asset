@@ -16,4 +16,4 @@ MonoBehaviour:
   <ResourceConfigsList>k__BackingField: {fileID: 11400000, guid: 5174adec75143a2489b2eeea669b3136, type: 2}
   <StartPossibleConfigs>k__BackingField:
   - {fileID: 11400000, guid: 980ba83f6ab245745bab07cc8e95401d, type: 2}
-  - {fileID: 11400000, guid: 980ba83f6ab245745bab07cc8e95401d, type: 2}
+  - {fileID: 11400000, guid: 2f922cae6397975469a3d32d9602b8c2, type: 2}

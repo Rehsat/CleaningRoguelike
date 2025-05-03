@@ -6,10 +6,10 @@ namespace Game.Upgrades
 {
     public interface IUpgradeView
     {
-        public IReadOnlyReactiveTrigger OnUpgradesReset { get;}
+        public IReadOnlyReactiveTrigger OnUpgradesReroll { get;}
         public IReadOnlyReactiveEvent<UpgradeData> OnTryBuyUpgrade { get; }
         public void SetUpgrades(List<UpgradeData> upgrades);
         public void ApplyUpgradeCallback(UpgradeData upgradeData, bool buySuccess);
-        public void SetUpgradesResetCost(float cost);
+        public void SetUpgradesRerollCost(float cost);
     }
 }

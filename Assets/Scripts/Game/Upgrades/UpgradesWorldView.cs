@@ -21,7 +21,7 @@ namespace Game.Upgrades
         private ReactiveProperty<bool> _isUpgradeShowed;
         private CompositeDisposable _compositeDisposable;
         
-        public IReadOnlyReactiveTrigger OnUpgradesReset => _upgradesUIView.OnUpgradesReset;
+        public IReadOnlyReactiveTrigger OnUpgradesReroll => _upgradesUIView.OnUpgradesReroll;
         public IReadOnlyReactiveEvent<UpgradeData> OnTryBuyUpgrade => _upgradesUIView.OnTryBuyUpgrade;
         
         [Inject]
@@ -76,9 +76,9 @@ namespace Game.Upgrades
             _upgradesUIView.ApplyUpgradeCallback(upgradeData, buySuccess);
         }
 
-        public void SetUpgradesResetCost(float cost)
+        public void SetUpgradesRerollCost(float cost)
         {
-            _upgradesUIView.SetUpgradesResetCost(cost);
+            _upgradesUIView.SetUpgradesRerollCost(cost);
         }
 
         private void OnDestroy()
