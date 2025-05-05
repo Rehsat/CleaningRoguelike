@@ -7,6 +7,7 @@ using Game.Interactables.Factories;
 using Game.Player.Data;
 using Game.Player.PayerInput;
 using Game.Quota;
+using Game.Services;
 using Game.UI.Resources;
 using Game.Upgrades;
 using Gasme.Configs;
@@ -34,11 +35,9 @@ namespace Game
             Container.Bind<GameValuesContainer>().FromNew().AsSingle();
             Container.Bind<GameValueChangeObserver>().FromNew().AsSingle().NonLazy();
 
-            Container.Bind<UpgradesSelector>().FromNew().AsSingle();
-            var upgradeView =_sceneObjects.GetObjectsComponent<IUpgradeView>(SceneObject.UpgradeView);
-            Container.BindInstance(upgradeView).AsSingle();
-            Container.BindInterfacesAndSelfTo<UpgradeController>().AsSingle().NonLazy();
-
+            InstallUpgrades();
+            InstallServices();
+            
             Container.Bind<ObjectSeller>().FromNew().AsSingle();
             Container.Bind<QuotaCostManager>().FromNew().AsSingle();
             
@@ -57,6 +56,21 @@ namespace Game
         {
             var washingMachinePrefab = _globalConfig.PrefabsContainer.GetPrefabsComponent<WashingMachine>(Prefab.WashingMachine);
             Container.BindInstance(new WashingMachineFactory(washingMachinePrefab)).AsSingle();
+        }
+
+        private void InstallUpgrades()
+        {
+            var upgradeView =_sceneObjects.GetObjectsComponent<IUpgradeView>(SceneObject.UpgradeView);
+            
+            Container.Bind<UpgradesSelector>().FromNew().AsSingle();
+            Container.BindInstance(upgradeView).AsSingle();
+            Container.BindInterfacesAndSelfTo<UpgradesController>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<UpgradesShowStateController>().AsSingle().NonLazy();
+        }
+
+        private void InstallServices()
+        {
+            Container.Bind<CursorEnableService>().FromNew().AsSingle().NonLazy();
         }
         private void InstallStateMachine()
         {

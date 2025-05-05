@@ -7,8 +7,10 @@ using UnityEngine;
 
 namespace Game.Upgrades
 {
-    public class UpgradeController : IDisposable, IGlobalContextListener
+    //В теории можно разделить Reroll и Upgrade, но не вижу в этом особо смыла
+    public class UpgradesController : IDisposable, IGlobalContextListener
     {
+        private readonly GameValuesContainer _gameValuesContainer;
         private UpgradesSelector _upgradesSelector;
         private IUpgradeView _upgradeView;
         private ContextContainer _globalContextContainer;
@@ -16,21 +18,18 @@ namespace Game.Upgrades
 
         private int _lastCountOfUpgrades;
         [Inject]
-     /*   public UpgradeController(UpgradesSelector upgradesSelector, SceneObjectsContainer sceneObjectsContainer)
-        {
-            Debug.LogError(GetHashCode());
-            var upgradeView = sceneObjectsContainer.GetObjectsComponent<IUpgradeView>(SceneObject.UpgradeView);
-            Init(upgradesSelector, upgradeView);
-        }*/
-        private UpgradeController(UpgradesSelector upgradesSelector, IUpgradeView upgradeView)
+        private UpgradesController(UpgradesSelector upgradesSelector,
+         IUpgradeView upgradeView, 
+         GameValuesContainer gameValuesContainer)
         {
             _compositeDisposable = new CompositeDisposable();
             _upgradeView = upgradeView;
+            _gameValuesContainer = gameValuesContainer;
             _upgradesSelector = upgradesSelector;
             
             _upgradesSelector.CurrentUpgrades.Subscribe(upgradeView.SetUpgrades).AddTo(_compositeDisposable);
             _upgradeView.OnTryBuyUpgrade.SubscribeWithSkip(TryBuyUpgrade).AddTo(_compositeDisposable);
-            _upgradeView.OnUpgradesReroll.SubscribeWithSkip(TryResetReroll).AddTo(_compositeDisposable);
+            _upgradeView.OnUpgradesReroll.SubscribeWithSkip(TryRerollUpgrades).AddTo(_compositeDisposable);
         }
         public void SelectNewUpgrades(int upgradesCount)
         {
@@ -44,11 +43,19 @@ namespace Game.Upgrades
         }
         private void TryBuyUpgrade(UpgradeData upgradeData)
         {
-            upgradeData.ApplyActions(_globalContextContainer);
-            _upgradeView.ApplyUpgradeCallback(upgradeData, true);
+            var upgradeMoneyResource = _gameValuesContainer.GetPlayerValue(PlayerValue.UpgradeMoney);
+            var currentUpgradeMoney = upgradeMoneyResource.CurrentValue;
+            var isBuySuccess = currentUpgradeMoney.Value >= upgradeData.Cost;
+            if (isBuySuccess)
+            {
+                upgradeMoneyResource.ChangeValueBy(upgradeData.ConfigData.Cost);
+                upgradeData.ApplyActions(_globalContextContainer);
+            }
+            
+            _upgradeView.ApplyUpgradeCallback(upgradeData, isBuySuccess);
         }
 
-        private void TryResetReroll()
+        private void TryRerollUpgrades()
         {
             _upgradesSelector.SelectNewUpgrades(_lastCountOfUpgrades);
         }

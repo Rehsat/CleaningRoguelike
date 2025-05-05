@@ -8,16 +8,16 @@ namespace Game.GameStateMachine
 {
     public class UpgradeGameState : ILevelState
     {
-        private readonly UpgradeController _upgradeController;
+        private readonly UpgradesController _upgradesController;
         private readonly InteractableButton _startQuotaButton;
 
         private CompositeDisposable _compositeDisposable;
         private GameStateMachine _stateMachine;
 
         [Inject]
-        public UpgradeGameState(SceneObjectsContainer sceneObjects, UpgradeController upgradeController)
+        public UpgradeGameState(SceneObjectsContainer sceneObjects, UpgradesController upgradesController)
         {
-            _upgradeController = upgradeController;
+            _upgradesController = upgradesController;
             _startQuotaButton = sceneObjects.GetObjectsComponent<InteractableButton>(SceneObject.QuotaStartButton);
             _startQuotaButton.Construct();
         }
@@ -30,7 +30,7 @@ namespace Game.GameStateMachine
             _compositeDisposable?.Dispose();
             _compositeDisposable = new CompositeDisposable();
             
-            _upgradeController.SelectNewUpgrades(3);
+            _upgradesController.SelectNewUpgrades(3);
             
             _startQuotaButton.SetEnabled(true);
             _startQuotaButton.OnInteracted.SubscribeWithSkip((() =>
@@ -53,7 +53,7 @@ namespace Game.GameStateMachine
     public class BootstrapState : ILevelState
     {
         private GameStateMachine _gameStateMachine;
-        public BootstrapState(UpgradeController upgradeController, 
+        public BootstrapState(UpgradesController upgradesController, 
             SceneObjectsContainer sceneObjectsContainer, 
             GlobalContextContainer globalContextContainer)
         {

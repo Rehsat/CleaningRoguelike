@@ -15,6 +15,7 @@ namespace Game.Upgrades
     {
         [SerializeField] private Button _rerollButton;
         [SerializeField] private LayoutGroup _upgradesRoot;
+        
         private CompositeDisposable _upgradeViewsDisposable;
         private UpgradeDataView _upgradeDataViewPrefab;
         private List<UpgradeDataView> _activeUpgradeDataViews;
@@ -44,7 +45,7 @@ namespace Game.Upgrades
         {
             _upgradeDataViewPrefab = prefabsContainer.GetPrefabsComponent<UpgradeDataView>(Prefab.UpgradeView);
             _activeUpgradeDataViews = new List<UpgradeDataView>();
-            _rerollButton.onClick.AddListener(SendResetCallback);
+            _rerollButton.onClick.AddListener(SendRerollCallback);
         }
         public void SetUpgrades(List<UpgradeData> upgrades)
         {
@@ -101,14 +102,19 @@ namespace Game.Upgrades
             _activeUpgradeDataViews?.ToList().ForEach(RemoveUpgradeView);
         }
 
-        private void SendResetCallback()
+        private void SendRerollCallback()
         {
             _onTryResetUpgrades.Notify();
         }
 
         private void OnDestroy()
         {
-            _rerollButton.onClick.RemoveListener(SendResetCallback);
+            _rerollButton.onClick.RemoveListener(SendRerollCallback);
+        }
+
+        public void SetShowState(bool isShowed)
+        {
+            gameObject.SetActive(isShowed);
         }
     }
 }

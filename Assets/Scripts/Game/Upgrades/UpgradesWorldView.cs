@@ -18,40 +18,18 @@ namespace Game.Upgrades
         [SerializeField] private float _hideRotation = -20;
         [SerializeField] private float _animationDuration = 0.5f;
         private bool _isAnimationInProgress;
-        private ReactiveProperty<bool> _isUpgradeShowed;
         private CompositeDisposable _compositeDisposable;
         
         public IReadOnlyReactiveTrigger OnUpgradesReroll => _upgradesUIView.OnUpgradesReroll;
         public IReadOnlyReactiveEvent<UpgradeData> OnTryBuyUpgrade => _upgradesUIView.OnTryBuyUpgrade;
         
         [Inject]
-        public void Construct(PlayerInput playerInput)
+        public void Construct()
         {
             _compositeDisposable = new CompositeDisposable();
-            _isUpgradeShowed = new ReactiveProperty<bool>();
-            
-            playerInput.OnUpgradesOpenButtonPressed.SubscribeWithSkip((() =>
-            {
-                if (_isAnimationInProgress) return;
-                _isUpgradeShowed.Value = !_isUpgradeShowed.Value;
-            })).AddTo(_compositeDisposable);
-
-            
-            var isFirstTime = true;
-            _isUpgradeShowed.Subscribe((isShowing =>
-            {
-                if (isFirstTime)
-                {
-                    isFirstTime = false;
-                    return;
-                }
-                
-                SetShowState(isShowing);
-                
-            })).AddTo(_compositeDisposable);
         }
 
-        private void SetShowState(bool isShowing)
+        public void SetShowState(bool isShowing)
         {
             _isAnimationInProgress = true;
             

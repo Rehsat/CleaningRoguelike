@@ -1,3 +1,4 @@
+using Game.Services;
 using Gasme.Configs;
 using UniRx;
 using UnityEngine;
@@ -5,7 +6,7 @@ using Zenject;
 
 namespace Game.UI.Resources
 {
-    public class GameValueChangeObserver
+    public class GameValueChangeObserver 
     {
         private readonly BounceAnimator _bounceAnimator;
         private readonly PrefabsContainer _prefabsContainer;

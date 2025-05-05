@@ -36,9 +36,4 @@ namespace Game.Interactables.Contexts
             GameResources = gameResources;
         }
     }
-
-    public interface IGlobalContextListener
-    {
-        public void SetContext(GlobalContextContainer globalContextContainer);
-    }
 }

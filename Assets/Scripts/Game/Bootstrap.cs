@@ -33,8 +33,6 @@ public class Bootstrap : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 144;
-       // Cursor.lockState = CursorLockMode.Locked;
-       // Cursor.visible = false;
         var clothingFactory = new ClothingFactory(_clothingPrefab, _gameValuesContainer.GetPlayerValue(PlayerValue.ActiveClothing));
         var clothingSpawner = new ClothingSpawner(clothingFactory, _clothingSpawnPosition);
         _clothingSpawnButton.Construct();
