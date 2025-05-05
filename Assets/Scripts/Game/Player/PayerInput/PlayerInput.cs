@@ -9,6 +9,7 @@ namespace Game.Player.PayerInput
         private Input _input;
         
         private readonly ReactiveEvent<Vector2> _onLookPerformed;
+        private readonly ReactiveEvent<Vector2> _onMousePositionChange;
         private readonly ReactiveEvent<Vector2> _onBuildingRotatePerformed;
         private readonly ReactiveEvent<bool> _onRunningStateChange;
         private readonly ReactiveEvent<bool> _onInteractButtonPressStateChange;
@@ -16,7 +17,8 @@ namespace Game.Player.PayerInput
         private readonly ReactiveTrigger _onUpgradesOpenButtonPressed;
 
         public IReadOnlyReactiveEvent<Vector2> OnLookPerformed => _onLookPerformed;
-        public ReactiveEvent<Vector2> OnBuildingRotatePerformed => _onBuildingRotatePerformed;
+        public IReadOnlyReactiveEvent<Vector2> OnMousePositionChange => _onMousePositionChange;
+        public IReadOnlyReactiveEvent<Vector2> OnBuildingRotatePerformed => _onBuildingRotatePerformed;
         public IReadOnlyReactiveEvent<bool> OnRunningStateChange => _onRunningStateChange;
         public IReadOnlyReactiveEvent<bool> OnInteractButtonPressed => _onInteractButtonPressStateChange;
         public IReadOnlyReactiveEvent<bool> OnThrowButtonPressStateChange => _onThrowButtonPressStateChange;
@@ -29,6 +31,7 @@ namespace Game.Player.PayerInput
             
             _onLookPerformed = new ReactiveEvent<Vector2>();
             _onBuildingRotatePerformed = new ReactiveEvent<Vector2>();
+            _onMousePositionChange = new ReactiveEvent<Vector2>();
             
             _onRunningStateChange = new ReactiveEvent<bool>();
             _onInteractButtonPressStateChange = new ReactiveEvent<bool>();
@@ -48,6 +51,8 @@ namespace Game.Player.PayerInput
             
             _input.InputMap.BuildRotate.performed += ctx => 
                 _onBuildingRotatePerformed.Notify(_input.InputMap.BuildRotate.ReadValue<Vector2>());
+            _input.InputMap.MousePosition.performed += ctx =>
+                _onMousePositionChange.Notify(_input.InputMap.MousePosition.ReadValue<Vector2>());
             
             _input.Enable();
         }

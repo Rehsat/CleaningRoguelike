@@ -89,6 +89,15 @@ public partial class @Input: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""1d767334-8d1d-43a1-a8c3-ffe36e54ee2f"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -234,6 +243,17 @@ public partial class @Input: IInputActionCollection2, IDisposable
                     ""action"": ""BuildRotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d83318a-1a31-41b5-a339-8c81ba720e3f"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -249,6 +269,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
         m_InputMap_Throw = m_InputMap.FindAction("Throw", throwIfNotFound: true);
         m_InputMap_ShowUpgrades = m_InputMap.FindAction("ShowUpgrades", throwIfNotFound: true);
         m_InputMap_BuildRotate = m_InputMap.FindAction("BuildRotate", throwIfNotFound: true);
+        m_InputMap_MousePosition = m_InputMap.FindAction("MousePosition", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -317,6 +338,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
     private readonly InputAction m_InputMap_Throw;
     private readonly InputAction m_InputMap_ShowUpgrades;
     private readonly InputAction m_InputMap_BuildRotate;
+    private readonly InputAction m_InputMap_MousePosition;
     public struct InputMapActions
     {
         private @Input m_Wrapper;
@@ -328,6 +350,7 @@ public partial class @Input: IInputActionCollection2, IDisposable
         public InputAction @Throw => m_Wrapper.m_InputMap_Throw;
         public InputAction @ShowUpgrades => m_Wrapper.m_InputMap_ShowUpgrades;
         public InputAction @BuildRotate => m_Wrapper.m_InputMap_BuildRotate;
+        public InputAction @MousePosition => m_Wrapper.m_InputMap_MousePosition;
         public InputActionMap Get() { return m_Wrapper.m_InputMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -358,6 +381,9 @@ public partial class @Input: IInputActionCollection2, IDisposable
             @BuildRotate.started += instance.OnBuildRotate;
             @BuildRotate.performed += instance.OnBuildRotate;
             @BuildRotate.canceled += instance.OnBuildRotate;
+            @MousePosition.started += instance.OnMousePosition;
+            @MousePosition.performed += instance.OnMousePosition;
+            @MousePosition.canceled += instance.OnMousePosition;
         }
 
         private void UnregisterCallbacks(IInputMapActions instance)
@@ -383,6 +409,9 @@ public partial class @Input: IInputActionCollection2, IDisposable
             @BuildRotate.started -= instance.OnBuildRotate;
             @BuildRotate.performed -= instance.OnBuildRotate;
             @BuildRotate.canceled -= instance.OnBuildRotate;
+            @MousePosition.started -= instance.OnMousePosition;
+            @MousePosition.performed -= instance.OnMousePosition;
+            @MousePosition.canceled -= instance.OnMousePosition;
         }
 
         public void RemoveCallbacks(IInputMapActions instance)
@@ -409,5 +438,6 @@ public partial class @Input: IInputActionCollection2, IDisposable
         void OnThrow(InputAction.CallbackContext context);
         void OnShowUpgrades(InputAction.CallbackContext context);
         void OnBuildRotate(InputAction.CallbackContext context);
+        void OnMousePosition(InputAction.CallbackContext context);
     }
 }

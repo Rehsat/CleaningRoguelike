@@ -21,7 +21,7 @@ namespace Game.Services
             var cursorRequired = IsCursorRequired();
             var lockState = cursorRequired ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.lockState = lockState;
-            Cursor.visible = cursorRequired;
+            Cursor.visible = false;
         }
 
         private bool IsCursorRequired()
