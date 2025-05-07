@@ -48,7 +48,7 @@ namespace Game.Upgrades
             var isBuySuccess = currentUpgradeMoney.Value >= upgradeData.Cost;
             if (isBuySuccess)
             {
-                upgradeMoneyResource.ChangeValueBy(upgradeData.ConfigData.Cost);
+                upgradeMoneyResource.ChangeValueBy(-upgradeData.ConfigData.Cost);
                 upgradeData.ApplyActions(_globalContextContainer);
             }
             

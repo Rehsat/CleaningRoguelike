@@ -8,7 +8,8 @@ using UnityEngine.UI;
 // TODO отрефакторить
 public class BounceAnimator : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("Settings")] 
+    [SerializeField] private float _delaySeconds;
     [SerializeField] private float jumpHeight = 100f;
     [SerializeField] private float jumpDuration = 0.5f;
     [SerializeField] private float scaleMultiplier = 1.2f;
@@ -16,10 +17,13 @@ public class BounceAnimator : MonoBehaviour
     [SerializeField] private RectTransform _text;
     [SerializeField] private Canvas _rootCanvas;
 
-    private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
     private Vector3 _originalPosition;
     private Vector3 _originalScale;
+    private Vector3 _startPosition;
+    private bool _animationInProgress;
+
+    private Queue<RectTransform> _transformsToAnimate = new Queue<RectTransform>();
 
     private void Awake()
     {
@@ -31,12 +35,29 @@ public class BounceAnimator : MonoBehaviour
 
     public void PlayBounceAnimation(RectTransform transformToAnimate, Vector3 position)
     {
-        _rectTransform = transformToAnimate;
-        _rectTransform.parent = _rootCanvas.transform;
+        _startPosition = position;
+        _transformsToAnimate.Enqueue(transformToAnimate);
+        if (_animationInProgress == false)
+            StartCoroutine(PlayAnimationSequence());
+    }
+
+    private IEnumerator PlayAnimationSequence()
+    {
+        _animationInProgress = true;
+        while (_transformsToAnimate.Count>0)
+        {
+            PlayBounceAnimation(_transformsToAnimate.Dequeue());
+            yield return new WaitForSeconds(_delaySeconds);
+        }
+        _animationInProgress = false;
+    }
+    private void PlayBounceAnimation(RectTransform transformToAnimate)
+    {
+        transformToAnimate.parent = _rootCanvas.transform;
         _canvasGroup = transformToAnimate.GetComponent<CanvasGroup>();
 
         // Установка позиции и текста
-        _rectTransform.anchoredPosition = position;
+        transformToAnimate.anchoredPosition = _startPosition;
        // GetComponent<Text>().text = transformToAnimate.ToString();
 
         // Активация объекта
@@ -48,28 +69,30 @@ public class BounceAnimator : MonoBehaviour
 
 
         Tween jump =
-            _rectTransform
+            transformToAnimate
                 .DOScale(Vector3.one * scaleMultiplier, jumpDuration * 0.5f)
                 .SetEase(Ease.OutBack);
-        sequence.Append(_rectTransform
+        sequence.Append(transformToAnimate
             .DOLocalMoveY(_originalPosition.y + jumpHeight, jumpDuration)
             .SetEase(Ease.OutQuad))
             .Join(jump);
-
+        sequence.Join(transformToAnimate
+            .DOLocalMoveX(_originalPosition.x + Random.Range(-120f, 120f), jumpDuration * 1.8f)
+            .SetEase(Ease.InOutSine));
         // Падение вниз с затуханием
-        sequence.Append(_rectTransform
+        sequence.Append(transformToAnimate
             .DOLocalMoveY(_originalPosition.y, jumpDuration * 0.8f)
             .SetEase(Ease.InQuad))
             .Join(_canvasGroup.DOFade(0f, jumpDuration * 0.5f)
             .SetDelay(fadeDelay));
 
         // Случайное смещение по горизонтали
-        sequence.Join(_rectTransform
+        sequence.Join(transformToAnimate
             .DOLocalMoveX(_originalPosition.x + Random.Range(-30f, 30f), jumpDuration * 1.8f)
             .SetEase(Ease.InOutSine));
 
         // Завершение анимации
-        sequence.OnComplete(() => gameObject.SetActive(false))
+        sequence.OnComplete(() => transformToAnimate.gameObject.SetActive(false))
             .SetLink(gameObject)
             .Play();
     }

@@ -22,7 +22,15 @@ namespace Game.Configs
     {
         [SerializeField] private bool _hasMaximum;
         [SerializeField] private Sprite _icon;
+        [field: SerializeField] public ResourceObserve ObserveType;
         public Sprite Icon => _icon;
         public bool HasMaximum => _hasMaximum;
+    }
+
+    public enum ResourceObserve
+    {
+        None = 0,
+        OnlyCurrentValue = 1,
+        OnlyMaxValue = 2
     }
 }

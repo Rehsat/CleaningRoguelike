@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using EasyFramework.ReactiveEvents;
 using Game.Configs;
 using Game.Interactables;
@@ -26,6 +27,11 @@ public class GameValuesContainer
     {
         return _playerResources[playerValueType];
     }
+
+    public List<PlayerGameValueData> GetAllValues()
+    {
+        return _playerResources.Values.ToList();
+    }
 }
 
 public class PlayerGameValueData
@@ -37,6 +43,7 @@ public class PlayerGameValueData
     private ReactiveEvent<float> _onValueChanged;
 
     private float _lastValue;
+    private float _lastMaxValue;
 
     public ResourceConfig Config => _config;
     public IReadOnlyReactiveProperty<float> CurrentValue => _currentValue;
@@ -53,11 +60,23 @@ public class PlayerGameValueData
         _maxValue = new ReactiveProperty<float>(maxValue);
         _lastValue = 0;
         _onValueChanged = new ReactiveEvent<float>();
+        
+        //TODO явно повторяется код, подумать как исправить
         _currentValue.Subscribe(newValue =>
         {
             var difference = newValue - _lastValue;
             _lastValue = newValue;
-            _onValueChanged.Notify(difference);
+
+            if (_config.ObserveType == ResourceObserve.OnlyCurrentValue)
+                _onValueChanged.Notify(difference);
+        });
+        _maxValue.Subscribe(maxValue =>
+        {
+            var difference = maxValue - _lastMaxValue;
+            _lastMaxValue = maxValue;
+
+            if (_config.ObserveType == ResourceObserve.OnlyMaxValue)
+                _onValueChanged.Notify(difference);
         });
     }
 
@@ -73,11 +92,13 @@ public class PlayerGameValueData
             _currentValue.Value = _maxValue.Value;
             return;
         }
+
         _currentValue.Value = value;
     }
 
     public void ChangeMaxValueBy(float value)
     {
+        
         _maxValue.Value += value;
     }
 

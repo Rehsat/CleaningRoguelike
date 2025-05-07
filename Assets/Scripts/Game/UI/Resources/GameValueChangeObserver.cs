@@ -18,7 +18,8 @@ namespace Game.UI.Resources
             _compositeDisposable = new CompositeDisposable();
             _bounceAnimator = bounceAnimator;
             _prefabsContainer = prefabsContainer;
-            StartObserveValue(gameValues.GetPlayerValue(PlayerValue.QuotaMoney));
+            var allValues = gameValues.GetAllValues();
+            allValues.ForEach(StartObserveValue);
         }
 
         public void StartObserveValue(PlayerGameValueData gameValueData)
