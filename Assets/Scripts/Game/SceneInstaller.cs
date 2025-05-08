@@ -55,7 +55,8 @@ namespace Game
         private void InstallFactories()
         {
             var washingMachinePrefab = _globalConfig.PrefabsContainer.GetPrefabsComponent<WashingMachine>(Prefab.WashingMachine);
-            Container.BindInstance(new WashingMachineFactory(washingMachinePrefab)).AsSingle();
+            var washingMachineFactory = new WashingMachineFactory(washingMachinePrefab);
+            Container.BindInterfacesAndSelfTo<WashingMachineFactory>().FromInstance(washingMachineFactory).AsSingle();
         }
 
         private void InstallUpgrades()

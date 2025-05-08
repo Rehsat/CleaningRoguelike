@@ -26,14 +26,4 @@ namespace Game.Interactables.Contexts
             return _contextContainer.TryGetContext(out context);
         }
     }
-
-    public class GameValuesContext : IContext
-    {
-        public GameValuesContainer GameResources { get; private set; }
-        [Inject]
-        public GameValuesContext(GameValuesContainer gameResources)
-        {
-            GameResources = gameResources;
-        }
-    }
 }

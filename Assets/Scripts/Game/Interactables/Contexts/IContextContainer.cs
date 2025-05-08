@@ -1,4 +1,6 @@
-﻿namespace Game.Interactables
+﻿using Zenject;
+
+namespace Game.Interactables
 {
     public interface IContextContainer
     {
@@ -6,4 +8,5 @@
         public bool TryGetContext<TContext>(out TContext context) where TContext : IContext;
     }
     public interface IContext{}
+    
 }
