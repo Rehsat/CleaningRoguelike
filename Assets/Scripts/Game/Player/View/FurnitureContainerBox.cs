@@ -1,14 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using Game.Interactables;
 using UnityEngine;
 
-public class FurnitureContainerBox : InteractableView
+namespace Game.Player.View
 {
-    public GameObject BuildableObjectPrefab;
-    protected override void OnConstruct()
+    public class FurnitureContainerBox : InteractableView
     {
-        base.OnConstruct();
-        AddActionApplier(new PickUpAction());
+        public GameObject BuildableObjectPrefab { get; private set; }
+
+        protected override void OnConstruct()
+        {
+            base.OnConstruct();
+            AddActionApplier(new PickUpAction());
+        }
+
+        public void SetBuildableObject(GameObject buildable)
+        {
+            BuildableObjectPrefab = buildable;
+        }
     }
 }

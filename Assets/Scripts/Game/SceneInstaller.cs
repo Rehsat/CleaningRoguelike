@@ -6,6 +6,7 @@ using Game.Interactables.Contexts;
 using Game.Interactables.Factories;
 using Game.Player.Data;
 using Game.Player.PayerInput;
+using Game.Player.View;
 using Game.Quota;
 using Game.Services;
 using Game.UI.Resources;
@@ -18,6 +19,7 @@ namespace Game
 {
     public class SceneInstaller : MonoInstaller
     {
+        [SerializeField] private Transform _spawnPosition;
         [SerializeField] private GameGlobalConfig _globalConfig;
         [SerializeField] private SceneObjectsContainer _sceneObjects;
         [SerializeField] private BounceAnimator _bounceAnimator;
@@ -48,7 +50,7 @@ namespace Game
 
         private void InstallConfigs(GameGlobalConfig globalConfig)
         {
-            Container.BindInstance(globalConfig.PrefabsContainer).AsSingle();
+            Container.BindInterfacesAndSelfTo<PrefabsContainer>().FromInstance(globalConfig.PrefabsContainer).AsSingle();
             Container.BindInstance(globalConfig.ResourceConfigsList).AsSingle();
             Container.BindInstance(globalConfig).AsSingle();
         }
@@ -57,6 +59,11 @@ namespace Game
             var washingMachinePrefab = _globalConfig.PrefabsContainer.GetPrefabsComponent<WashingMachine>(Prefab.WashingMachine);
             var washingMachineFactory = new WashingMachineFactory(washingMachinePrefab);
             Container.BindInterfacesAndSelfTo<WashingMachineFactory>().FromInstance(washingMachineFactory).AsSingle();
+
+            var boxPrefab =
+                _globalConfig.PrefabsContainer.GetPrefabsComponent<FurnitureContainerBox>(Prefab.BuildableBox);
+            var boxesFactory = new BuildableBoxesFactory(boxPrefab);
+            Container.BindInterfacesAndSelfTo<BuildableBoxesFactory>().FromInstance(boxesFactory).AsSingle();
         }
 
         private void InstallUpgrades()
@@ -85,6 +92,8 @@ namespace Game
         private void InstallGlobalContext()
         {
             Container.Bind<IContext>().To<GameValuesContext>().AsSingle();
+            Container.Bind<IContext>().To<SpawnTransformContext>()
+                .FromInstance(new SpawnTransformContext(_spawnPosition)).AsSingle();
             
             Container.Bind<GlobalContextContainer>().FromNew().AsSingle().NonLazy();
         }

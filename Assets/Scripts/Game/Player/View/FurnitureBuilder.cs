@@ -4,6 +4,7 @@ using System.Linq;
 using DG.Tweening;
 using Game.Player.Data;
 using Game.Player.PayerInput;
+using Game.Player.View;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
