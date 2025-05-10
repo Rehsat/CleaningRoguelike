@@ -21,6 +21,7 @@ namespace Game.Clothing
         // TODO отрефакторить, чтоб был констракт в фабрике
         protected override void OnConstruct()
         {
+            Debug.LogError(1);
             _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerConfig, _dropPosition, transform.forward);
             IWorkAction workAction = null;
             
