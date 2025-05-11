@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EasyFramework.ReactiveEvents;
 using EasyFramework.ReactiveTriggers;
+using Game.Interactables.Stackable;
 using Game.Player.Data;
 using UniRx;
 using UnityEngine;
@@ -10,7 +11,7 @@ using UnityEngine.Serialization;
 namespace Game.Interactables
 {
     [RequireComponent(typeof(Outline))]
-    public class InteractableView : MonoBehaviour, IContextContainer
+    public class InteractableView : MonoBehaviour, IContextContainer, IStackable
     {
         [SerializeField] private Outline _outline;
         [SerializeField] private bool aimHelpEnabled;
@@ -94,6 +95,10 @@ namespace Game.Interactables
             return _contextContainer.TryGetContext(out context);
         }
 
+        public void Stack(IStackable objectToStackWith)
+        {
+            
+        }
 
         protected virtual void OnConstruct(){}
         protected virtual bool CanBeInteracted(ContextContainer context, Interaction interactionType){return true;}
@@ -104,6 +109,7 @@ namespace Game.Interactables
             if (_outline == null)
                 _outline = GetComponent<Outline>();
         }
+
     }
 
     public enum Interaction
