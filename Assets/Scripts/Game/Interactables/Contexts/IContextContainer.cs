@@ -8,5 +8,4 @@ namespace Game.Interactables
         public bool TryGetContext<TContext>(out TContext context) where TContext : IContext;
     }
     public interface IContext{}
-    
 }

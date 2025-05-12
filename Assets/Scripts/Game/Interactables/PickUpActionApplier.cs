@@ -235,18 +235,19 @@ namespace Game.Interactables
 
     public class ChangeSellablePrice : IAction
     {
-        private readonly float _changeValue;
+        private readonly ReactiveProperty<float> _changeValue;
+        public ReactiveProperty<float> ChangeValue => _changeValue;
 
         public ChangeSellablePrice(float changeValue)
         {
-            _changeValue = changeValue;
+            _changeValue = new ReactiveProperty<float>(changeValue);
         }
         public void ApplyAction(ContextContainer context)
         {
             SellableContext sellableContext = null;
             if (context.TryGetContext(out sellableContext))
             {
-                sellableContext.ChangeCostBy(_changeValue);
+                sellableContext.ChangeCostBy(_changeValue.Value);
             }
         }
     }

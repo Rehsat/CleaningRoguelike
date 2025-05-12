@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EasyFramework.ReactiveEvents;
 using EasyFramework.ReactiveTriggers;
 using Game.Interactables.Stackable;
@@ -11,7 +12,7 @@ using UnityEngine.Serialization;
 namespace Game.Interactables
 {
     [RequireComponent(typeof(Outline))]
-    public class InteractableView : MonoBehaviour, IContextContainer, IStackable
+    public class InteractableView : MonoBehaviour, IContextContainer, IStackable, IActionsContainer
     {
         [SerializeField] private Outline _outline;
         [SerializeField] private bool aimHelpEnabled;
@@ -95,6 +96,19 @@ namespace Game.Interactables
             return _contextContainer.TryGetContext(out context);
         }
 
+        public bool TryGetAction<TActionType>(out TActionType action) where TActionType : IAction
+        {
+            action = default;
+            foreach (var item in _actions.Values.SelectMany(listOfAction => listOfAction))
+            {
+                if (item is TActionType typedAction)
+                {
+                    action = typedAction;
+                    return true;
+                }
+            }
+            return false;
+        }
         public void Stack(IStackable objectToStackWith)
         {
             
