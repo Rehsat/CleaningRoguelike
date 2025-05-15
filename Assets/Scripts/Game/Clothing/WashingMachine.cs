@@ -25,7 +25,7 @@ namespace Game.Clothing
             IWorkAction workAction = null;
             
             AddActionApplier(_clothingChangeAction, Interaction.Collide);
-            AddActionApplier(new ChangeSellablePrice(20), Interaction.Collide);
+            AddActionApplier(new ChangeSellablePriceAction(20), Interaction.Collide);
             if (_workMode == WorkMode.Automatic)
             {
                 workAction = new TimedAction(_clothingChangeAction, 25);
@@ -74,11 +74,12 @@ namespace Game.Clothing
 
         protected override bool CanBeInteracted(ContextContainer context, Interaction interactionType)
         {
-            if (context.TryGetContext<ClothingContext>(out var clothing) == false) 
+            context.TryGetContext<ClothingContext>(out var clothing);
+            if (interactionType == Interaction.Collide && clothing == null) 
                 return true;
 
-            var canClothingBeChanged =
-                clothing.Clothing.CurrentClothingStage == _clothingChangerConfig.StageToApply
+            var canClothingBeChanged = clothing != null
+                && clothing.Clothing.CurrentClothingStage == _clothingChangerConfig.StageToApply
                 && _clothingChangeAction.HasClothing == false;
 
             var isAutomaticReady =

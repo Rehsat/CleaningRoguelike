@@ -14,10 +14,11 @@ namespace Game.Interactables.InteractablesObserver
         public void Start()
         {
             _compositeDisposable = new CompositeDisposable();
-            ChangeSellablePrice priceChangeAction;
-            if (_interactableView.TryGetAction(out priceChangeAction))
+            ChangeSellablePriceAction priceActionChangeAction;
+            if (_interactableView.TryGetAction(typeof(ChangeSellablePriceAction),out var action))
             {
-                var revenue = priceChangeAction.ChangeValue;
+                priceActionChangeAction = (ChangeSellablePriceAction)action;
+                var revenue = priceActionChangeAction.ChangeValue;
                 revenue.Subscribe((value =>
                 {
                     _revenueText.text = $"+{value}";

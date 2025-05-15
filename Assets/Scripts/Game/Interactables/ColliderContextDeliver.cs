@@ -1,4 +1,5 @@
 using System;
+using Game.Player.View;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
@@ -25,7 +26,8 @@ namespace Game.Interactables
                 Debug.LogError(collision);
                 if (collision.gameObject.TryGetComponent<InteractableView>(out var interactable))
                 {
-                    var collideContext = new CollidedInteractableContext(_myInteractableView);
+                    InteractableView interactableView = _myInteractableView;
+                    var collideContext = new CollidedInteractableContext(interactableView);
                     _contextContainer = new ContextContainer()
                         .AddContext(collideContext);
                     

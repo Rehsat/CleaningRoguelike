@@ -96,7 +96,21 @@ namespace Game.Interactables
             return _contextContainer.TryGetContext(out context);
         }
 
-        public bool TryGetAction<TActionType>(out TActionType action) where TActionType : IAction
+
+        public bool TryGetAction(Type actionType, out IAction action)
+        {
+            action = default;
+            foreach (var item in _actions.Values.SelectMany(listOfAction => listOfAction))
+            {
+                if (item.GetType() == actionType)
+                {
+                    action = item;
+                    return true;
+                }
+            }
+            return false;
+        }
+        /*public bool TryGetAction<TActionType>(out TActionType action) where TActionType : IAction
         {
             action = default;
             foreach (var item in _actions.Values.SelectMany(listOfAction => listOfAction))
@@ -108,10 +122,37 @@ namespace Game.Interactables
                 }
             }
             return false;
-        }
+        }*/
         public void Stack(IStackable objectToStackWith)
         {
-            
+            if (objectToStackWith is IActionsContainer actionsContainer)
+            {
+                var allActions = GetAllActions();
+                allActions.ForEach(action =>
+                {
+                    if (action is IStackable stackable)
+                    {
+                        if(actionsContainer.TryGetAction(action.GetType(), out var secondAction))
+                        {
+                            stackable.Stack((IStackable)secondAction);
+                        }
+                    }
+                });
+            }
+        }
+        private List<IAction> GetAllActions()
+        {
+            List<IAction> allActions = new List<IAction>();
+        
+            foreach (var actionList in _actions.Values)
+            {
+                if (actionList != null)
+                {
+                    allActions.AddRange(actionList);
+                }
+            }
+        
+            return allActions;
         }
 
         protected virtual void OnConstruct(){}
@@ -123,7 +164,6 @@ namespace Game.Interactables
             if (_outline == null)
                 _outline = GetComponent<Outline>();
         }
-
     }
 
     public enum Interaction
