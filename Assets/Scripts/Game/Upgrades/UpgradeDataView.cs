@@ -32,7 +32,6 @@ namespace Game.Upgrades
 
         private void SendBuyCallback()
         {
-            Debug.LogError(4444);
             _onBuy.Notify(_myUpgradeData);
         }
         public void SetImage(Sprite image)

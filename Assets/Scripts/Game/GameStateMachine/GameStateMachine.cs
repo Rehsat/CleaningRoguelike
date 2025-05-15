@@ -12,6 +12,7 @@ namespace Game.GameStateMachine
             {
                 state.SetStateMachine(this);
             }
+            EnterState<BootstrapState>();
         }
     }
 

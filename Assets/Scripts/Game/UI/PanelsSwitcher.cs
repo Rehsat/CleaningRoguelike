@@ -33,15 +33,16 @@ namespace Game.UI
                 
                 sequence
                     .Append(hideTween);
+                
                 _currentPanel = null;
             }
             if (_panels.ContainsKey(panelType))
             {
                 var panel = _panels[panelType];
                 _currentPanel = panel;
-                var showPosition = panel.transform.localPosition - _hideMovement;
-                Debug.LogError(showPosition);
                 _currentPanel.gameObject.SetActive(true);
+                
+                var showPosition = panel.transform.localPosition - _hideMovement;
                 var showTween = panel
                     .DOLocalMove(showPosition, 0.5f)
                     .SetEase(Ease.OutBack);

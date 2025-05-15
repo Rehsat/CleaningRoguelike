@@ -8,24 +8,28 @@ using UnityEngine;
 public class CurrentGameStateObserver 
 {
     private ReactiveProperty<GameState> _currentGameState;
+    private Dictionary<Type, GameState> _gameStateByType;
     public ReactiveProperty<GameState> CurrentGameState => _currentGameState;
 
-    public CurrentGameStateObserver(GameStateMachine gameStateMachine)
+    public CurrentGameStateObserver()
     {
         _currentGameState = new ReactiveProperty<GameState>();
-        var gameStateByType = new Dictionary<Type, GameState>()
+        _gameStateByType = new Dictionary<Type, GameState>()
         {
             {typeof(UpgradeGameState), GameState.Upgrade},
             {typeof(DoWorkState), GameState.Work}
         };
-        
+    }
+
+    public void SetStateMachine(GameStateMachine gameStateMachine)
+    {
         gameStateMachine.OnStateChange.SubscribeWithSkip(currentState =>
         {
             var currentStateType = currentState.GetType();
             var gameState = GameState.Unknown;
 
-            if (gameStateByType.ContainsKey(currentStateType))
-                gameState = gameStateByType[currentStateType];
+            if (_gameStateByType.ContainsKey(currentStateType))
+                gameState = _gameStateByType[currentStateType];
             _currentGameState.Value = gameState;
         });
     }

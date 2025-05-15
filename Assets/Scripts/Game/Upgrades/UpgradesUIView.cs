@@ -80,6 +80,8 @@ namespace Game.Upgrades
 
         private void SpawnUpgradesView(List<UpgradeData> upgrades)
         {
+            if(_upgradeDataViewPrefab == null) return;
+            
             ClearUpgradeViews();
             for (var index = 0; index < upgrades.Count; index++)
             {

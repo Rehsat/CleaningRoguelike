@@ -4,6 +4,7 @@ using Game.GameStateMachine;
 using Game.Interactables;
 using Game.Interactables.Contexts;
 using Game.Interactables.Factories;
+using Game.Interactables.Stackable;
 using Game.Player.Data;
 using Game.Player.PayerInput;
 using Game.Player.View;
@@ -29,7 +30,8 @@ namespace Game
             
             Container.BindInstance(_sceneObjects).AsSingle();
             Container.BindInstance(_bounceAnimator).AsSingle();
-            
+
+            Container.Bind<InteractablesMergeService>().FromNew().AsSingle();
             InstallFactories();
             
             Container.Bind<PlayerInput>().FromNew().AsSingle();
@@ -56,14 +58,8 @@ namespace Game
         }
         private void InstallFactories()
         {
-            var washingMachinePrefab = _globalConfig.PrefabsContainer.GetPrefabsComponent<WashingMachine>(Prefab.WashingMachine);
-            var washingMachineFactory = new WashingMachineFactory(washingMachinePrefab);
-            Container.BindInterfacesAndSelfTo<WashingMachineFactory>().FromInstance(washingMachineFactory).AsSingle();
-
-            var boxPrefab =
-                _globalConfig.PrefabsContainer.GetPrefabsComponent<FurnitureContainerBox>(Prefab.BuildableBox);
-            var boxesFactory = new BuildableBoxesFactory(boxPrefab);
-            Container.BindInterfacesAndSelfTo<BuildableBoxesFactory>().FromInstance(boxesFactory).AsSingle();
+            Container.BindInterfacesAndSelfTo<WashingMachineFactory>().FromNew().AsSingle();
+            Container.BindInterfacesAndSelfTo<BuildableBoxesFactory>().FromNew().AsSingle();
         }
 
         private void InstallUpgrades()
@@ -82,10 +78,11 @@ namespace Game
         }
         private void InstallStateMachine()
         {
-            Container.Bind<ILevelState>().To<UpgradeGameState>().AsSingle();
-            Container.Bind<ILevelState>().To<DoWorkState>().AsSingle();
+            Container.Bind<ILevelState>().To<BootstrapState>().FromNew().AsSingle().NonLazy();
+            Container.Bind<ILevelState>().To<UpgradeGameState>().FromNew().AsSingle();
+            Container.Bind<ILevelState>().To<DoWorkState>().FromNew().AsSingle();
 
-            Container.Bind<GameStateMachine.GameStateMachine>().FromNew().AsSingle();
+            Container.Bind<GameStateMachine.GameStateMachine>().FromNew().AsSingle().NonLazy();
             Container.Bind<CurrentGameStateObserver>().FromNew().AsSingle();
         }
 

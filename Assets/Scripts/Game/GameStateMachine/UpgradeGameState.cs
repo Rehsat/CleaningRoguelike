@@ -1,5 +1,4 @@
 ﻿using Game.Interactables;
-using Game.Interactables.Contexts;
 using Game.Upgrades;
 using UniRx;
 using Zenject;
@@ -54,32 +53,5 @@ namespace Game.GameStateMachine
         public void OnUpdate()
         {
         }
-    }
-
-    public class BootstrapState : ILevelState
-    {
-        private GameStateMachine _gameStateMachine;
-        public BootstrapState(UpgradesController upgradesController, 
-            SceneObjectsContainer sceneObjectsContainer, 
-            GlobalContextContainer globalContextContainer)
-        {
-            
-            _gameStateMachine.EnterState<UpgradeGameState>();
-        }
-        public void Enter()
-        {
-            
-        }
-
-        public void Exit()
-        {
-        }
-
-
-        public void SetStateMachine(GameStateMachine stateMachine)
-        {
-            _gameStateMachine = stateMachine;
-        }
-        public void OnUpdate(){}
     }
 }

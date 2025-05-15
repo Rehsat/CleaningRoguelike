@@ -21,7 +21,6 @@ namespace Game.Clothing
         // TODO отрефакторить, чтоб был констракт в фабрике
         protected override void OnConstruct()
         {
-            Debug.LogError(1);
             _clothingChangeAction = new ChangeClothingStateAction(_clothingChangerConfig, _dropPosition, transform.forward);
             IWorkAction workAction = null;
             
@@ -75,16 +74,20 @@ namespace Game.Clothing
 
         protected override bool CanBeInteracted(ContextContainer context, Interaction interactionType)
         {
-            var canClothingBeChanged = context.TryGetContext<ClothingContext>(out var clothing)
-                                       && clothing.Clothing.CurrentClothingStage == _clothingChangerConfig.StageToApply
-                                       && _clothingChangeAction.HasClothing == false;
-            
-            var isAutomaticReady = canClothingBeChanged || 
-                                   interactionType == Interaction.OnLookStateChange && _clothingChangeAction.HasClothing;
-            if (isAutomaticReady)
-            {
+            if (context.TryGetContext<ClothingContext>(out var clothing) == false) 
                 return true;
-            }
+
+            var canClothingBeChanged =
+                clothing.Clothing.CurrentClothingStage == _clothingChangerConfig.StageToApply
+                && _clothingChangeAction.HasClothing == false;
+
+            var isAutomaticReady =
+                canClothingBeChanged ||
+                interactionType == Interaction.OnLookStateChange && _clothingChangeAction.HasClothing;
+            
+            if (isAutomaticReady)
+                return true;
+            
             return false;
         }
     }

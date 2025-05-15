@@ -18,7 +18,7 @@ public class SceneObjectsContainer : MonoBehaviour
     public List<WashingMachine> WashingMachines; // временно  так, придумать решение получше
 
     [Inject]
-    public void Construct(WashingMachineFactory washingMachineFactory, CurrentGameStateObserver currentGameStateObserver)
+    public void Construct(WashingMachineFactory washingMachineFactory)
     {
         WashingMachines = new List<WashingMachine>();
         washingMachineFactory.OnWashingMachineCreated.SubscribeWithSkip(WashingMachines.Add);
@@ -28,7 +28,6 @@ public class SceneObjectsContainer : MonoBehaviour
             var newMachine = washingMachineFactory.Create(config);
             newMachine.transform.position = position.position;
         });
-        _gameStateChangeObserverViews.ForEach(view => SetupGameStateObserver(view, currentGameStateObserver));
     }
 
     private void SetupGameStateObserver(GameObject observerView, CurrentGameStateObserver currentGameStateObserver)
@@ -46,6 +45,11 @@ public class SceneObjectsContainer : MonoBehaviour
     public T GetObjectsComponent<T>(SceneObject sceneObject)
     {
         return GetObject(sceneObject).GetComponent<T>();
+    }
+
+    public void SetupGameStateObserver(CurrentGameStateObserver currentGameStateObserver)
+    {
+        _gameStateChangeObserverViews.ForEach(view => SetupGameStateObserver(view, currentGameStateObserver));
     }
 }
 
